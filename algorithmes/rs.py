@@ -6,6 +6,7 @@ from math import sin, cos, sqrt, atan2, radians, exp
 s=random_sol()X
 
 class RSAgent(mesa.Agent):
+    
   def __init__(self,id, model):
     super().__init__(id, model)
     self.id = id        
@@ -41,41 +42,41 @@ class RSAgent(mesa.Agent):
 
 
 
-def random_sol():
-    s=[1, 2, 4, 3, 7, 8, 9, 5, 6]
-    for k in range(1,nb_camions):
-        s.append(0)
-    rd.shuffle(s)
-    s = [0]+s+[0]
-    return s
-
-def N(s):
-    """fonction qui, pour une solution s donnée, renvoie une solution N(s) voisine de s
-        voisine veut dire ici qu'il n'y a qu'une permutation entre les deux solutions"""
-    n=len(s)
-    i=rd.randint(1,n-2)
-    j=rd.randint(1,n-2)
-    while(i==j):
+    def random_sol():
+        s=[1, 2, 4, 3, 7, 8, 9, 5, 6]
+        for k in range(1,nb_camions):
+            s.append(0)
+        rd.shuffle(s)
+        s = [0]+s+[0]
+        return s
+    
+    def N(s):
+        """fonction qui, pour une solution s donnée, renvoie une solution N(s) voisine de s
+            voisine veut dire ici qu'il n'y a qu'une permutation entre les deux solutions"""
+        n=len(s)
+        i=rd.randint(1,n-2)
         j=rd.randint(1,n-2)
-    x=s[i]
-    s[i]=s[j]
-    s[j]=x
-    return s
-
-
-
-def distance(long_a,lat_a,long_b,lat_b):
-    k=6373.0 #rayon de la terre
-    d_long = radians(long_b) - radians(long_a)
-    d_lat = radians(lat_b) - radians(lat_a)
-    x = sin(d_lat / 2)**2 + cos(radians(lat_a)) * cos(radians(lat_b)) * sin(d_long / 2)**2
-    z = 2 * atan2(sqrt(x), sqrt(1 - x))
-    return k*z
-
-
-def f(s,w):
-    somme=0
-    for i in range(len(s)):
-        for j in range(len(s[0])-1):
-            somme+=distance(rows_table_customers[s[i],4],rows_table_customers[s[i],3],rows_table_customers[s[j],4],rows_table_customers[s[j],3])
-    return w*K(s)+somme
+        while(i==j):
+            j=rd.randint(1,n-2)
+        x=s[i]
+        s[i]=s[j]
+        s[j]=x
+        return s
+    
+    
+    
+    def distance(long_a,lat_a,long_b,lat_b):
+        k=6373.0 #rayon de la terre
+        d_long = radians(long_b) - radians(long_a)
+        d_lat = radians(lat_b) - radians(lat_a)
+        x = sin(d_lat / 2)**2 + cos(radians(lat_a)) * cos(radians(lat_b)) * sin(d_long / 2)**2
+        z = 2 * atan2(sqrt(x), sqrt(1 - x))
+        return k*z
+    
+    
+    def f(s,w):
+        somme=0
+        for i in range(len(s)):
+            for j in range(len(s[0])-1):
+                somme+=distance(rows_table_customers[s[i],4],rows_table_customers[s[i],3],rows_table_customers[s[j],4],rows_table_customers[s[j],3])
+        return w*K(s)+somme
