@@ -55,29 +55,51 @@ class Liste_Clients:
         self.liste = rd.shuffle(self.liste)
 
     def permutation_list(self):
-        n=len(self.list)
+        result = self.liste.copy()
+        n=len(result)
         i=rd.randint(0,n-1)
         j=rd.randint(0,n-1)
         while(i==j):
             j=rd.randint(1,n-2)
-        x=self.list[i]
-        self.list[i]=self.list[j]
-        self.list[j]=x
+        x=result[i]
+        result[i]=result[j]
+        result[j]=x
+        return(result)
     
     #Le croisement ne marche que si les deux listes sont de même longueur
     def croisement_list(self, Liste_Clients liste_clients):
-        for i in range(len(self.liste)):
-            if p[1][i] in p[0]:    # cannot risk crossover, keep basic gene
-                offspring.append(p[0][i])
-            else:                  # standard uniform crossover
-                offspring.append(p[random.randint(0, 1)][i])
-
-    #Avant de modifier une liste, on peut créer une nouvelle instance dans laquelle on copie le contenu histoire de conserver l'originale
-    def copy_list(self, Liste_Clients liste_clients_init):
-        self.liste = liste_clients_init.liste.copy()
+        s = len(self.liste)
+        resultat1 = self.liste.copy()
+        resultat2 = liste_clients.liste.copy()
+        point = rd.randint(0, s-1)
+        for i in range(point, s) :
+            resultat1[i], resultat2[i] = resultat2[i], resultat1[i]
+        resultat1 = verifSolu(resultat1, self)
+        resultat2 = verifSolu(resultat2, self)
+        return(resultat1, resultat2)
 
     def add_client_to_list(self, Client client):
         self.liste.append(client)
+    
+    def verifSolu(resultat, self) :
+        Absents = []
+        Doublons = []
+        resultatf = resultat.copy()
+        for i in self.liste :
+            instances = 0
+            for j in range(len(resultat)):
+                if resultat[j].customer_code == i.customer_code and instances == 0 :
+                    instances += 1
+                elif resultat[j].customer_code == i.customer_code and instances == 1 :
+                    Doublons.append([i,j])
+            if instances == 0 :
+                Absents.append(i)
+        for k in range(len(Doublons)) :
+            resultatf[Doublons[k][1]] = Absents[k]
+        if len(Absents) > len(Doublons) :
+            for l in range(len(Doublons), len(Absents)) :
+                resultatf.append(Absents[l])
+        return(resultatf)
 
 def read_files():
     file = open("2_detail_table_customers.csv")
