@@ -20,12 +20,13 @@ class Client:
         self.total_volume_m3 = vol_m3
 
 class Vehicules:
-    def __init__(self, vh_cd, vh_total_wght, vh_total_vol, vh_fx_cost_km, vh_vr_cost_time):
+    def __init__(self, vh_cd, vh_total_wght, vh_total_vol, vh_fx_cost_km, vh_vr_cost_time,vh_speed):
         self.vehicle_code = vh_cd
         self.vehicle_total_weight = vh_total_wght
         self.vehicle_total_volume = vh_total_vol
         self.vehicle_fixed_cost_km = vh_fx_cost_km
         self.vehicle_variable_cost_km = vh_vr_cost_time
+        self.vehicle_speed = vh_speed
 
 class Routes:
     def __init__(self, unique_id):

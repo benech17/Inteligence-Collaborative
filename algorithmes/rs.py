@@ -3,14 +3,14 @@ import random as rd
 from math import sin, cos, sqrt, atan2, radians, exp
 
 
-s=random_sol()X
+s=random_sol()
 
 class RSAgent(mesa.Agent):
     
   def __init__(self,id, model):
     super().__init__(id, model)
     self.id = id        
-    self.s_et=s  #solution actuelle
+    self.s_et=liste_clients.sol  #solution actuelle
     self.nb_iter =0  #nombre d'itérations
     self.nb_iter_cycle = 2    #☻nombre d'itérations par cycle
     self.nv_cycle = True   #s'agit-il d'un nouveau cycle ou non
@@ -74,9 +74,12 @@ class RSAgent(mesa.Agent):
         return k*z
     
     
-    def f(s,w):
+    def f(s,w,rows_table_customers):
         somme=0
         for i in range(len(s)):
             for j in range(len(s[0])-1):
                 somme+=distance(rows_table_customers[s[i],4],rows_table_customers[s[i],3],rows_table_customers[s[j],4],rows_table_customers[s[j],3])
         return w*K(s)+somme
+    
+    def K(s):
+        return len(s)
