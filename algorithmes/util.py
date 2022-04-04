@@ -18,16 +18,28 @@ class Client:
         self.number_of_articles = num_of_art
         self.total_weight_kg = wght_kg
         self.total_volume_m3 = vol_m3
+    
+    def calc_dist(self, client)
 
 class Vehicules:
     def __init__(self, vh_cd, vh_total_wght, vh_total_vol, vh_fx_cost_km, vh_vr_cost_time):
         self.vehicle_code = vh_cd
         self.vehicle_total_weight = vh_total_wght
         self.vehicle_total_volume = vh_total_vol
+        self.vehicle_weight = 0
+        self.vehicle_volume = 0
         self.vehicle_fixed_cost_km = vh_fx_cost_km
         self.vehicle_variable_cost_km = vh_vr_cost_time
+    
+    def add_client_order(self, Client client):
+        self.vehicle_weight += client.total_weight_kg
+        self.vehicle_volume += client.total_volume_m3
+        if (self.vehicle_weight > self.vehicle_total_weight) or (self.vehicle_volume > self.vehicle_total_volume):
+            return(True)
+        return(False)
 
-class Routes:
+
+class Liste_Clients:
     def __init__(self, unique_id):
         self.id = unique_id
 
