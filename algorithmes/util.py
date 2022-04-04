@@ -63,10 +63,18 @@ class Liste_Clients:
         x=self.list[i]
         self.list[i]=self.list[j]
         self.list[j]=x
+    
+    #Le croisement ne marche que si les deux listes sont de même longueur
+    def croisement_list(self, Liste_Clients liste_clients):
+        for i in range(len(self.liste)):
+            if p[1][i] in p[0]:    # cannot risk crossover, keep basic gene
+                offspring.append(p[0][i])
+            else:                  # standard uniform crossover
+                offspring.append(p[random.randint(0, 1)][i])
 
-    #Avant de muter une liste, on créé une nouvelle instance puis on copie le contenu de la liste à muter dans la seconde
-    def copy_list(self, Liste_Clients liste_clients):
-        self.liste = liste_clients.liste.copy()
+    #Avant de modifier une liste, on peut créer une nouvelle instance dans laquelle on copie le contenu histoire de conserver l'originale
+    def copy_list(self, Liste_Clients liste_clients_init):
+        self.liste = liste_clients_init.liste.copy()
 
     def add_client_to_list(self, Client client):
         self.liste.append(client)
