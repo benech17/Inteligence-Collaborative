@@ -30,7 +30,7 @@ class Client:
         return(k*z)
 
 class Vehicules:
-    def __init__(self, vh_cd, vh_total_wght, vh_total_vol, vh_fx_cost_km, vh_vr_cost_time, depot):
+    def __init__(self, vh_cd, vh_total_wght, vh_total_vol, vh_fx_cost_km, vh_vr_cost_km, w):
         self.vehicle_code = vh_cd
         self.vehicle_total_weight = vh_total_wght
         self.vehicle_total_volume = vh_total_vol
@@ -38,9 +38,8 @@ class Vehicules:
         self.vehicle_volume = 0
         self.vehicle_fixed_cost_km = vh_fx_cost_km
         self.vehicle_variable_cost_km = vh_vr_cost_km
-        self.liste_clients = [depot]
-        agent_eval = EvalAgent()
-        self.cout = agent_eval.f_cout()   #je suis pas trop sûr de bien appeler l'agent évaluateur
+        self.omega = w
+        self.liste_clients = [] #attention, les dépôts ne sont pas pris en compte
     
     def add_client_order(self, client):
         if (self.vehicle_weight + client.total_weight_kg > self.vehicle_total_weight) or (self.vehicle_volume + client.total_volume_m3 > self.vehicle_total_volume):
@@ -49,6 +48,15 @@ class Vehicules:
         self.vehicle_volume += client.total_volume_m3
         return(True)
     
+    def f_cout(self, liste_client):
+        d=0
+        n=len(liste_client)
+        for i in range(n-1):
+            d += liste_client[i].calc_dist(liste_client[i+1])
+        d+=liste_client[0].depot_to_customer
+        d+=liste_client[n-1].customer_to_depot
+        return self.omega + d*self.vehicle_fixed_cost_km
+
     def attribute_client_to_vehicle(self, client):
         if self.add_client_order(client) == True:
             self.liste_clients.append(client)
