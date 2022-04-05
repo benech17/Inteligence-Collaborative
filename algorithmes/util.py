@@ -37,7 +37,7 @@ class Vehicules:
         self.vehicle_weight = 0
         self.vehicle_volume = 0
         self.vehicle_fixed_cost_km = vh_fx_cost_km
-        self.vehicle_variable_cost_km = vh_vr_cost_time
+        self.vehicle_variable_cost_km = vh_vr_cost_km
         self.liste_clients = []
     
     def add_client_order(self, Client client):
@@ -114,6 +114,7 @@ def read_files():
     for row in csvreader:
         rows_table_customers.append(row)
     file.close()
+
     file = open("3_detail_table_vehicles.csv")
     csvreader = csv.reader(file)
     header = next(csvreader)
@@ -153,4 +154,11 @@ def read_files():
             liste_routes.append(route)
             route = Liste_Clients(rows_table_customers[i][0])
         i += 1
-    return depot
+
+    #on récupère les huit véhicules dans une liste
+    liste_vehicules = []
+    for j in range(8) :
+        vehicule = Vehicule(rows_table_vehicles[j][2], rows_table_vehicles[j][3], rows_table_vehicles[j][4], rows_table_vehicles[j][5], rows_table_vehicles[j][6])
+        liste_vehicules.append(vehicule)
+    
+    return(depot,liste_routes,liste_vehicules)
