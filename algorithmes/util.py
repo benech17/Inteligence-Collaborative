@@ -138,14 +138,14 @@ def read_files():
     
     #construction de la liste des routes, qui sont constituées elles-mêmes d'une liste de clients associées à une demande
     liste_routes = []
-    route = []
+    route = Liste_Clients(rows_table_customers[0][0])
     i = 0
     while i < len(rows_table_customers) :
         if (i == 0 or rows_table_customers[i][0] == rows_table_customers[i-1][0]) :
             client = Client(rows_table_customers[i][2], float(rows_table_customers[i][3]), float(rows_table_customers[i][4]), float(rows_table_cust_depots_distances[2*i][5]), float(rows_table_cust_depots_distances[2*i][6]), float(rows_table_cust_depots_distances[2*i+1][5]), float(rows_table_cust_depots_distances[2*i+1][6]), float(rows_table_customers[i][7]), float(rows_table_customers[i][8]), float(rows_table_customers[i][9]))
-            route.append(client)
+            route.add_client_to_list(client)
         else :
             liste_routes.append(route)
-            route = []
+            route = Liste_Clients(rows_table_customers[i][0])
         i += 1
     return rows_table_customers, rows_table_vehicles, rows_table_depots, rows_table_cust_depots_distances, liste_routes, route
