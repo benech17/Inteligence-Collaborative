@@ -24,8 +24,8 @@ class Client:
     def calc_dist(self, Client client):
         k=6373.0 #rayon de la terre
         d_long = radians(client.customer_longitude) - radians(self.customer_longitude)
-        d_lat = radians(client.customer_latitude) - radians(self.customer_longitude)
-        x = sin(d_lat / 2)**2 + cos(radians(lat_a)) * cos(radians(lat_b)) * sin(d_long / 2)**2
+        d_lat = radians(client.customer_latitude) - radians(self.customer_latitude)
+        x = sin(d_lat / 2)**2 + cos(radians(client.customer_latitude)) * cos(radians(self.customer_latitude) * sin(d_long / 2)**2
         z = 2 * atan2(sqrt(x), sqrt(1 - x))
         return(k*z)
 
@@ -38,13 +38,18 @@ class Vehicules:
         self.vehicle_volume = 0
         self.vehicle_fixed_cost_km = vh_fx_cost_km
         self.vehicle_variable_cost_km = vh_vr_cost_time
+        self.liste_clients = []
     
     def add_client_order(self, Client client):
+        if (self.vehicle_weight + client.total_weight_kg > self.vehicle_total_weight) or (self.vehicle_volume + client.total_volume_m3 > self.vehicle_total_volume):
+            return(False)
         self.vehicle_weight += client.total_weight_kg
         self.vehicle_volume += client.total_volume_m3
-        if (self.vehicle_weight > self.vehicle_total_weight) or (self.vehicle_volume > self.vehicle_total_volume):
-            return(True)
-        return(False)
+        return(True)
+    
+    def attribute_client_to_vehicle(self, Client client):
+        if self.add_client_order(client) == True:
+            self.liste_clients.append(client)
 
 class Liste_Clients:
     def __init__(self, unique_id):
