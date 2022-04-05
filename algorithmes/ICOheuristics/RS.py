@@ -5,12 +5,12 @@ from math import exp
 
 class RSAgent(mesa.Agent):
     
-    def __init__(self,id, model, vehicule):
+    def __init__(self,id, model):
         super().__init__(id, model)
         self.id = id        
         #self.s_et=vehicule.liste_clients  #solution actuelle
         self.nb_iter =0  #nombre d'itérations
-        self.nb_iter_cycle = 2    #☻nombre d'itérations par cycle
+        self.nb_iter_cycle = 2    #nombre d'itérations par cycle
         self.nv_cycle = True   #s'agit-il d'un nouveau cycle ou non
         self.t=100   #température
         self.cout = 0    #cout de la solution actuelle
@@ -18,28 +18,29 @@ class RSAgent(mesa.Agent):
         self.w = 100
          
     def step(self, vehicule):
-        vehicule_s = vehicule
-        agent_eval = EvalAgent()
+        s=vehicule.liste_clients
+        cout_s = self.f_cout(s)
         while(self.nv_cycle):
             self.nb_iter=0
             self.nv_cycle=False
             while(self.nb_iter<self.nb_iter_cycle and self.t!=0):
                 self.nb_iter+=1
-                vehicule_s1 = vehicule_s
-                vehicule_s1.liste_clients = self.neighbour(vehicule_s.liste_clients)
-                vehicule_s1.cout = agent_eval.f_cout(vehicule_s1)
-                df=vehicule_s1.cout - vehicule_s.cout
+                s1 = self.neighbour(s)
+                cout_s1 = self.f_cout(s1)
+                df=cout_s1 - cout_s
                 if(df<0):
-                    vehicule_s=vehicule_s1
+                    s=s1
+                    cout_s=cout_s1
                     self.nv_cycle=True
                 else:
                     prob=exp(-df/self.t)
                     q=rd.random()
                     if(q<prob):
-                        vehicule_s=vehicule_s1
+                        s=s1
+                        cout_s=cout_s1
                         self.nv_cycle=True
-                if(vehicule_s.cout < vehicule.cout):
-                    vehicule = vehicule_s
+                if(cout_s < self.f_cout(vehicule.liste_clients)):
+                    vehicule.liste_clients = s
             self.t*=self.a
 
 
