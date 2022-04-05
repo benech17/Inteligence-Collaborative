@@ -1,37 +1,47 @@
-
 import mesa
 import mesa.time
 
-import genetic
-import graph
-import rs
-import taboo
-import util
-import viz
-import interface
+from ICOinterface import Streamlit
+from ICOheuristics import Taboo, Genetic, RS
+from ICOdata import Split, Read
 
 class GlobalModel(mesa.Model):
-    def __init__(self, N):
-        # RandomActivation va randomizer la ordre des step de chaque agent
-        self.schedule = mesa.time.RandomActivation(self)
-        # Initializer N agents, n'oublier pas d'envoyer le model
-        for i in range(N):
-            self.schedule.add(taboo.TabooAgent(i,self))
-    def step(self):
-        self.schedule.step()
-        print("------")
+    def __init__(self):
+        super().__init__()
+        self.planning = True
+        # A list with all the planning agents
+        self.planners = []
+        # self.schedule = mesa.time.RandomActivation(self)
+        # self.planning = False
+        # for i in range(N):
+        #     self.schedule.add(Taboo.Agent(i,self))
+    def create_planner_agent(self,agent):
+        '''Creates planning agents in list and returns them'''
+        newAgent = agent(self)
+        self.planners.append(newAgent)
+        return newAgent
 
+    def step(self):
+        if self.planning:
+            print("Planning!")
+        else:
+            print("Delivering!")
 
 def main():
-    model = GlobalModel(3)
-    model.step() 
-    depot = util.read_files()
-    interface.introduction()
-    interface.get_data()
-    # viz.basemap()
-    # viz.map(depot,[])
+    '''Main function of the program'''
+    # Creates the model and read files
+    model = GlobalModel()
+    reader = model.create_planner_agent(Read.Agent)
+    reader.read_clients()
+    reader.read_cost_distances()
+    reader.read_deposits()
+    reader.read_vehicles()
     
-    # Completer
+    print(reader)
+
+    # Starts by reading the different files. You can also send the path inside the functions to get other data. ICOData Read file.
+    # Creates the 
+    model.step() 
 
 if __name__ == "__main__":
     main()

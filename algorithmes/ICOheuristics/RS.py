@@ -5,8 +5,7 @@ from math import sin, cos, sqrt, atan2, radians, exp
 
 #s=random_sol()
 
-class RSAgent(mesa.Agent):
-    
+class Agent(mesa.Agent):
   def __init__(self,id, model, vehicule):
      super().__init__(id, model)
      self.id = id        

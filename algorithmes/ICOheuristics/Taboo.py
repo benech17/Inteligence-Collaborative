@@ -1,6 +1,6 @@
 import mesa
 
-class TabooAgent(mesa.Agent):
+class Agent(mesa.Agent):
     def __init__(self,id, model):
         super().__init__(id, model)
         self.id = id

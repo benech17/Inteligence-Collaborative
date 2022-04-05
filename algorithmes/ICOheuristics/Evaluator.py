@@ -1,6 +1,6 @@
 import mesa
 
-class EvalAgent(mesa.Agent):
+class Agent(mesa.Agent):
     def __init__(self,w,vh):
         self.omega = w
         self.cout = 0
