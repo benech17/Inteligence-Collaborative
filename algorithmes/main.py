@@ -8,6 +8,7 @@ import rs
 import taboo
 import util
 import viz
+import interface
 
 class GlobalModel(mesa.Model):
     def __init__(self, N):
@@ -25,7 +26,10 @@ def main():
     model = GlobalModel(3)
     model.step() 
     depot = util.read_files()
-    viz.map(depot,[])
+    interface.introduction()
+    interface.get_data()
+    # viz.basemap()
+    # viz.map(depot,[])
     
     # Completer
 
