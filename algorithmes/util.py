@@ -25,7 +25,7 @@ class Client:
         k=6373.0 #rayon de la terre
         d_long = radians(client.customer_longitude) - radians(self.customer_longitude)
         d_lat = radians(client.customer_latitude) - radians(self.customer_latitude)
-        x = sin(d_lat / 2)**2 + cos(radians(client.customer_latitude)) * cos(radians(self.customer_latitude) * sin(d_long / 2)**2
+        x = sin(d_lat / 2)**2 + cos(radians(client.customer_latitude)) * cos(radians(self.customer_latitude)) * sin(d_long / 2)**2
         z = 2 * atan2(sqrt(x), sqrt(1 - x))
         return(k*z)
 
