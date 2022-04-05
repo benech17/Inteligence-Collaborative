@@ -21,7 +21,7 @@ class Client:
         self.total_weight_kg = wght_kg
         self.total_volume_m3 = vol_m3
     
-    def calc_dist(self, Client client):
+    def calc_dist(self, client):
         k=6373.0 #rayon de la terre
         d_long = radians(client.customer_longitude) - radians(self.customer_longitude)
         d_lat = radians(client.customer_latitude) - radians(self.customer_latitude)
@@ -72,18 +72,18 @@ class Liste_Clients:
         return(result)
     
     #Le croisement ne marche que si les deux listes sont de même longueur
-    def croisement_list(self, Liste_Clients liste_clients):
+    def croisement_list(self, liste_clients):
         s = len(self.liste)
         resultat1 = self.liste.copy()
         resultat2 = liste_clients.liste.copy()
         point = rd.randint(0, s-1)
         for i in range(point, s) :
             resultat1[i], resultat2[i] = resultat2[i], resultat1[i]
-        resultat1 = verifSolu(resultat1, self)
-        resultat2 = verifSolu(resultat2, self)
+        resultat1 = self.verifSolu(resultat1, self)
+        resultat2 = self.verifSolu(resultat2, self)
         return(resultat1, resultat2)
 
-    def add_client_to_list(self, Client client):
+    def add_client_to_list(self, client):
         self.liste.append(client)
     
     def verifSolu(resultat, self) :
@@ -153,4 +153,4 @@ def read_files():
             liste_routes.append(route)
             route = Liste_Clients(rows_table_customers[i][0])
         i += 1
-    return rows_table_customers, rows_table_vehicles, rows_table_depots, rows_table_cust_depots_distances, liste_routes, route
+    return depot
