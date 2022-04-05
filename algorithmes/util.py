@@ -39,16 +39,8 @@ class Vehicules:
         self.vehicle_fixed_cost_km = vh_fx_cost_km
         self.vehicle_variable_cost_km = vh_vr_cost_km
         self.liste_clients = [depot]
-        self.cout = f_cout()
-        
-    def f_cout(self):
-        d=0
-        n=len(self.liste_clients)
-        for i in range(n-1):
-            d += self.liste_clients[i].calc_dist(self.liste_clients[i+1])
-        d+=self.liste_clients[0].depot_to_customer
-        d+=self.liste_clients[n-1].customer_to_depot
-        return omega + d*self.vehicle_fixed_cost_km
+        agent_eval = EvalAgent()
+        self.cout = agent_eval.f_cout()   #je suis pas trop sûr de bien appeler l'agent évaluateur
     
     def add_client_order(self, client):
         if (self.vehicle_weight + client.total_weight_kg > self.vehicle_total_weight) or (self.vehicle_volume + client.total_volume_m3 > self.vehicle_total_volume):
