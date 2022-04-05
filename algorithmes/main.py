@@ -1,3 +1,4 @@
+
 import mesa
 import mesa.time
 
@@ -8,7 +9,7 @@ import taboo
 import util
 import viz
 
-class GlobalMASModel(mesa.Model):
+class GlobalModel(mesa.Model):
     def __init__(self, N):
         # RandomActivation va randomizer la ordre des step de chaque agent
         self.schedule = mesa.time.RandomActivation(self)
@@ -19,10 +20,13 @@ class GlobalMASModel(mesa.Model):
         self.schedule.step()
         print("------")
 
+
 def main():
-    model = GlobalMASModel(3)
+    model = GlobalModel(3)
     model.step() 
-    rows_table_customers, rows_table_vehicles, rows_table_depots, rows_table_cust_depots_distances, liste_routes, route = util.read_files()
+    depot = util.read_files()
+    viz.map(depot,[])
+    
     # Completer
 
 if __name__ == "__main__":
