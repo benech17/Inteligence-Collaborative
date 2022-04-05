@@ -30,7 +30,7 @@ class Client:
         return(k*z)
 
 class Vehicules:
-    def __init__(self, vh_cd, vh_total_wght, vh_total_vol, vh_fx_cost_km, vh_vr_cost_time):
+    def __init__(self, vh_cd, vh_total_wght, vh_total_vol, vh_fx_cost_km, vh_vr_cost_time, depot):
         self.vehicle_code = vh_cd
         self.vehicle_total_weight = vh_total_wght
         self.vehicle_total_volume = vh_total_vol
@@ -38,16 +38,16 @@ class Vehicules:
         self.vehicle_volume = 0
         self.vehicle_fixed_cost_km = vh_fx_cost_km
         self.vehicle_variable_cost_km = vh_vr_cost_km
-        self.liste_clients = []
+        self.liste_clients = [depot]
     
-    def add_client_order(self, Client client):
+    def add_client_order(self, client):
         if (self.vehicle_weight + client.total_weight_kg > self.vehicle_total_weight) or (self.vehicle_volume + client.total_volume_m3 > self.vehicle_total_volume):
             return(False)
         self.vehicle_weight += client.total_weight_kg
         self.vehicle_volume += client.total_volume_m3
         return(True)
     
-    def attribute_client_to_vehicle(self, Client client):
+    def attribute_client_to_vehicle(self, client):
         if self.add_client_order(client) == True:
             self.liste_clients.append(client)
 
