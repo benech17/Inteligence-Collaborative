@@ -51,6 +51,7 @@ class GeneticAgent(mesa.Agent):
 
     def f_main(self):
         forceTriee, prePopTriee = self.triInsertion(self.cout,self.pop)
+        liste_clients_f = prePopTriee[0]
 
         #construction de S(t), liste de solutions de classe Liste_Clients
         listeProba = self.proba(forceTriee, prePopTriee)
@@ -74,6 +75,7 @@ class GeneticAgent(mesa.Agent):
                 self.pop.append(i.permutation_list())
             else :
                 self.pop.append(i)
+        return(liste_clients_f)
     
     def step(self):
         print("C'est le step",self.s,"du agent",self.id)
