@@ -10,6 +10,8 @@ if __name__ == "__main__":
     model.read_vehicles('Data/3_detail_table_vehicles.csv', w = 0)
     model.read_clients('Data/2_detail_table_customers.csv')
     # Assign clients to vehicles
-    model.assign_clients_to_vehicle()
-    model.verify_vehicles()
+    model.assign_clients_to_vehicles()
+    model.assign_heuristics_to_vehicles()
+    model.step() 
+    model.planning = False
     model.step() 

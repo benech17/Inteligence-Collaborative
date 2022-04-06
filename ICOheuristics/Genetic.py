@@ -6,7 +6,7 @@ from mesa.datacollection import DataCollector
 
 
 class GeneticAgent(mesa.Agent):
-    def __init__(self, id, model, vhl, pcross, pmut, taille):
+    def __init__(self, model, vhl, pcross, pmut, taille):
         super().__init__(model.next_id(), model)
         self.vehicule = vhl
         self.Pcross = pcross
@@ -22,7 +22,7 @@ class GeneticAgent(mesa.Agent):
             self.pop.append(self.vehicule.liste_clients.shuffle_list())
             self.cout.append(self.vehicule.f_cout(self.pop[i]))
 
-    def triInsertion(liste_couts,liste_pop):
+    def triInsertion(self,liste_couts,liste_pop):
         k = len(liste_couts)
         for i in range(1, k) :
             cle = liste_couts[i]

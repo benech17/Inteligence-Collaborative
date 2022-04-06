@@ -1,5 +1,5 @@
 import mesa
-import mesa.time
+from mesa.time import RandomActivation
 import pandas
 
 from ICOagents import Client, Deposit, Vehicle
@@ -51,29 +51,22 @@ class Model(mesa.Model):
             print(df.shape,len(self.agents['clients']),"Clients.",len(self.agents['routes']),"Routes")
         return df
 
-    def assign_clients_to_vehicle(self):
+    def assign_clients_to_vehicles(self):
         liste_vehicules =  list(self.agents['vehicles'].values())
-        # l = self.agents['routes'][2946091]
-        l = self.agents['routes'][0]
-        print(len(l.liste))
         for l in self.agents['routes']:
             for v in liste_vehicules:
                 j = 0
                 while v.add_client_order(l.liste[j]) != False:
                     v.attribute_client_to_vehicle(l.liste[j])
                     j += 1
-
-    def verify_vehicles(self):
-        total = 0
+    def assign_heuristics_to_vehicles(self):
+        self.schedule = mesa.time.RandomActivation(self)
         for v in self.agents['vehicles'].values():
-            t = len(v.clients.liste)
-            total+=t
-            print(t)
-        print(total)
-    
+            v.attribute_algorithm_to_vehicle(self,0.01,0.2,10,"genetic")
+            self.schedule.add(v)
     def step(self):
         if self.planning:
             print("Planning!")
-
         else:
+            self.schedule.step()
             print("Delivering!")
