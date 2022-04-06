@@ -1,5 +1,4 @@
 import random
-from ICOagents.Client import Liste_Clients
 from ICOheuristics.Genetic import GeneticAgent
 from ICOheuristics.Taboo import TabouAgent
 import mesa
@@ -18,7 +17,7 @@ class Agent(mesa.Agent):
         self.vehicle_volume = 0
         self.omega = w
         # A list of clients. Attention: Deposits should not be added
-        self.clients = Liste_Clients(model)
+        self.clients = []
         self.algorithm = []
         self.verifier = 0
     
@@ -40,7 +39,7 @@ class Agent(mesa.Agent):
 
     def attribute_client_to_vehicle(self, client):
         if self.add_client_order(client) == True:
-            self.clients.add_client_to_list(client)
+            self.clients.append(client)
 
     def attribute_algorithm_to_vehicle(self, model, pcross, pmut, taille_pop, typea):
         if typea == "genetic" :

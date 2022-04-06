@@ -9,6 +9,7 @@ class Agent(mesa.Agent):
         self.code = code
         self.lat = lat
         self.lon = lon
+
     def distance(self, other):
         '''Calculates distance between object and other point'''
         # K is the radius of the earth
