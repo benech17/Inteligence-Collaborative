@@ -11,7 +11,7 @@ class TabouAgent(mesa.Agent):
         self.s = 0
         self.vehicule = vhl
         self.pop_size = taille
-        self.dc = DataCollector({"solution": lambda m,n: self.f_main() })
+        self.dc = DataCollector({"solution": lambda (m,n): self.f_main() })
         
         
     
