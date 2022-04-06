@@ -2,6 +2,8 @@ from ssl import PROTOCOL_TLS_SERVER
 import mesa
 import numpy as np
 import random as rd
+from mesa.datacollection import DataCollector
+
 
 class GeneticAgent(mesa.Agent):
     def __init__(self, id, model, vhl, pcross, pmut, taille):
@@ -13,6 +15,7 @@ class GeneticAgent(mesa.Agent):
         self.pop = []
         self.cout = []
         self.s = 0
+        self.dc = DataCollector({"solution": lambda m: self.f_main() })
     
     def generateur(self):
         for i in range(self.pop_size) :
@@ -80,3 +83,4 @@ class GeneticAgent(mesa.Agent):
     def step(self):
         print("C'est le step",self.s,"du agent",self.id)
         self.s+=1
+        self.dc.collect(self)
