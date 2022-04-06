@@ -15,3 +15,5 @@ if __name__ == "__main__":
     model.step() 
     model.planning = False
     model.step() 
+    model.step() 
+    model.step() 

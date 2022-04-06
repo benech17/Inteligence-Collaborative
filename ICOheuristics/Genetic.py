@@ -24,7 +24,7 @@ class GeneticAgent(mesa.Agent):
             self.pop.append(a.add_liste_to_list(self.vehicule.clients.shuffle_list()))
             self.cout.append(self.vehicule.f_cout(self.pop[i].liste))
             
-    def triInsertion(liste_couts,liste_pop):
+    def triInsertion(self,liste_couts,liste_pop):
         k = len(liste_couts)
         for i in range(1, k) :
             cle = liste_couts[i]
@@ -56,30 +56,30 @@ class GeneticAgent(mesa.Agent):
 
     def step(self):
         forceTriee, prePopTriee = self.triInsertion(self.cout,self.pop)
-        liste_clients_f = prePopTriee[0]
+        print(forceTriee, prePopTriee)
+        # liste_clients_f = prePopTriee[0]
 
-        #construction de S(t), liste de solutions de classe Liste_Clients
-        listeProba = self.proba(forceTriee, prePopTriee)
-        S1 = self.constructS(listeProba, self.pop_size)
+        # #construction de S(t), liste de solutions de classe Liste_Clients
+        # listeProba = self.proba(forceTriee, prePopTriee)
+        # S1 = self.constructS(listeProba, self.pop_size)
           
-        #construction de S(t+1), liste de solutions de classe Liste_Clients
-        S2 = []
-        for i in range(0,len(S1),2) :
-            if rd.random() < self.Pcross :
-                a,b = S1[i].croisement_list(S1[i+1].liste)
-                S2.append(a)
-                S2.append(b)
-            else :
-                S2.append(S1[i])
-                S2.append(S1[i+1])
+        # #construction de S(t+1), liste de solutions de classe Liste_Clients
+        # S2 = []
+        # for i in range(0,len(S1),2) :
+        #     if rd.random() < self.Pcross :
+        #         a,b = S1[i].croisement_list(S1[i+1].liste)
+        #         S2.append(a)
+        #         S2.append(b)
+        #     else :
+        #         S2.append(S1[i])
+        #         S2.append(S1[i+1])
           
-        #construction de P(t+1)
-        self.pop = []
-        for i in S2 :
-            if rd.random() < self.Pmut :
-                self.pop.append(i.permutation_list())
-            else :
-                self.pop.append(i)
-        self.s+=1
+        # #construction de P(t+1)
+        # self.pop = []
+        # for i in S2 :
+        #     if rd.random() < self.Pmut :
+        #         self.pop.append(i.permutation_list())
+        #     else :
+        #         self.pop.append(i)
         print("je suis dans le step")
-        return(liste_clients_f)
+        # return(liste_clients_f)
