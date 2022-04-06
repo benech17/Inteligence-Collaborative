@@ -18,6 +18,9 @@ class Liste_Clients(mesa.Agent):
         super().__init__(model.next_id(), model)
         self.liste = []
     
+    def add_liste_to_list(self, liste):
+        self.liste = liste
+    
     def shuffle_list(self):
         self.liste = random.shuffle(self.liste)
 
