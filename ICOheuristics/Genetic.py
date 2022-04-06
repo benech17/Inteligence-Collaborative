@@ -7,7 +7,7 @@ from mesa.datacollection import DataCollector
 
 class GeneticAgent(mesa.Agent):
     def __init__(self, id, model, vhl, pcross, pmut, taille):
-        super().__init__(id, model)
+        super().__init__(model.next_id(), model)
         self.vehicule = vhl
         self.Pcross = pcross
         self.Pmut = pmut
@@ -15,7 +15,7 @@ class GeneticAgent(mesa.Agent):
         self.pop = []
         self.cout = []
         self.s = 0
-        self.dc = DataCollector({"solution": lambda m: self.f_main() })
+        #self.dc = DataCollector({"solution": lambda m: self.f_main() })
     
     def generateur(self):
         for i in range(self.pop_size) :
@@ -52,7 +52,7 @@ class GeneticAgent(mesa.Agent):
             S.append(listeProba[np.random.randint(0, k-1)]) 
         return(S)
 
-    def f_main(self):
+    def step(self):
         forceTriee, prePopTriee = self.triInsertion(self.cout,self.pop)
         liste_clients_f = prePopTriee[0]
 
@@ -78,9 +78,6 @@ class GeneticAgent(mesa.Agent):
                 self.pop.append(i.permutation_list())
             else :
                 self.pop.append(i)
-        return(liste_clients_f)
-    
-    def step(self):
-        print("C'est le step",self.s,"du agent",self.id)
         self.s+=1
-        self.dc.collect(self)
+        print("je suis dans le step")
+        return(liste_clients_f)

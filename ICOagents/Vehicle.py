@@ -1,4 +1,7 @@
 import random
+from ICOagents.Client import Liste_Clients
+from ICOheuristics.Genetic import GeneticAgent
+from ICOheuristics.Taboo import TabouAgent
 import mesa
     
 class Agent(mesa.Agent):
@@ -15,7 +18,7 @@ class Agent(mesa.Agent):
         self.vehicle_volume = 0
         self.omega = w
         # A list of clients. Attention: Deposits should not be added
-        self.clients = []
+        self.clients = Liste_Clients(self.id, model)
         self.algorithm = []
         self.verifier = 0
     
@@ -26,20 +29,32 @@ class Agent(mesa.Agent):
         self.vehicle_volume += client.total_volume_m3
         return(True)
     
-    def f_cout(self, liste_client):
+    def f_cout(self):
         d=0
-        n=len(liste_client)
+        n=len(self.clients.liste)
         for i in range(n-1):
-            d += liste_client[i].calc_dist(liste_client[i+1])
-        d+=liste_client[0].depot_to_customer
-        d+=liste_client[n-1].customer_to_depot
+            d += self.clients.liste[i].calc_dist(self.clients.liste[i+1])
+        d+=self.clients.liste[0].depot_to_customer
+        d+=self.clients.liste[n-1].customer_to_depot
         return self.omega + d*self.vehicle_fixed_cost_km
 
     def attribute_client_to_vehicle(self, client):
         if self.add_client_order(client) == True:
-            self.liste_clients.append(client)
+            self.clients.add_client_to_list(client)
 
-    def step():
-        pass
+    def attribute_algorithm_to_vehicle(self, model, pcross, pmut, taille_pop, type):
+        if type == "genetic" :
+            a = GeneticAgent(model, self, pcross, pmut, taille_pop)
+            self.algorithm.append(a)
+        elif type == "rs" :
+            a = RSAgent(model)
+            self.algorithm.append(a)
+        elif type == "Taboo" :
+            a = TabouAgent(model, self, taille_pop)
+            self.algorithm.append(a)
+
+    def step(self):
+        for i in self.algorithm :
+            i.step()
 
 
