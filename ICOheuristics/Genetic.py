@@ -3,6 +3,7 @@ import mesa
 import numpy as np
 import random as rd
 from mesa.datacollection import DataCollector
+from ICOagents.Client import Liste_Clients
 
 
 class GeneticAgent(mesa.Agent):
@@ -17,12 +18,13 @@ class GeneticAgent(mesa.Agent):
         self.s = 0
         #self.dc = DataCollector({"solution": lambda m: self.f_main() })
     
-    def generateur(self):
+    def generateur(self, model):
         for i in range(self.pop_size) :
-            self.pop.append(self.vehicule.liste_clients.shuffle_list())
-            self.cout.append(self.vehicule.f_cout(self.pop[i]))
-
-    def triInsertion(self,liste_couts,liste_pop):
+            a = Liste_Clients(model)
+            self.pop.append(a.add_liste_to_list(self.vehicule.clients.shuffle_list()))
+            self.cout.append(self.vehicule.f_cout(self.pop[i].liste))
+            
+    def triInsertion(liste_couts,liste_pop):
         k = len(liste_couts)
         for i in range(1, k) :
             cle = liste_couts[i]
@@ -64,7 +66,7 @@ class GeneticAgent(mesa.Agent):
         S2 = []
         for i in range(0,len(S1),2) :
             if rd.random() < self.Pcross :
-                a,b = S1[i].croisement_list(S1[i+1])
+                a,b = S1[i].croisement_list(S1[i+1].liste)
                 S2.append(a)
                 S2.append(b)
             else :
