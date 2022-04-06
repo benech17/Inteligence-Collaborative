@@ -3,7 +3,6 @@ import mesa
 import numpy as np
 import random as rd
 from mesa.datacollection import DataCollector
-from ICOagents.Client import Liste_Clients
 
 
 class GeneticAgent(mesa.Agent):
@@ -14,7 +13,7 @@ class GeneticAgent(mesa.Agent):
         self.Pmut = pmut
         self.popu_size = taille
         self.cout = []
-        self.popu = self.generateur(model)
+        self.popu = self.generateur()
         self.s = 0
         #self.dc = DataCollector({"solution": lambda m: self.f_main() })
     

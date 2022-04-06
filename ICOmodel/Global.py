@@ -43,8 +43,8 @@ class Model(mesa.Model):
                 self.agents['clients'][id] = Client.Agent(self,row)
             route_id = row['ROUTE_ID']
             if not route_id in self.agents['routes']:
-                self.agents['routes'][route_id] = Client.Liste_Clients(self)
-            self.agents['routes'][route_id].add_client_to_list(self.agents['clients'][id])
+                self.agents['routes'][route_id] = []
+            self.agents['routes'][route_id].append(self.agents['clients'][id])
         # Transforms routes in list
         self.agents['routes'] = list(self.agents['routes'].values())
         if self.verbose:
@@ -56,8 +56,8 @@ class Model(mesa.Model):
         for l in self.agents['routes']:
             for v in liste_vehicules:
                 j = 0
-                while v.add_client_order(l.liste[j]) != False:
-                    v.attribute_client_to_vehicle(l.liste[j])
+                while v.add_client_order(l[j]) != False:
+                    v.attribute_client_to_vehicle(l[j])
                     j += 1
     def assign_heuristics_to_vehicles(self):
         self.schedule = mesa.time.RandomActivation(self)
