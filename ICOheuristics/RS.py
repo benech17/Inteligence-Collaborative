@@ -17,7 +17,7 @@ class RSAgent(mesa.Agent):
         self.a = 0.5
         self.w = 100
         self.s1 = 1
-        self.dc = DataCollector({"solution": lambda m: self.neighbour() })
+        self.dc = DataCollector({"solution": lambda m: self.f_main() })
          
     def f_main(self, vehicule):
         s=vehicule.liste_clients
@@ -44,8 +44,7 @@ class RSAgent(mesa.Agent):
                 if(cout_s < self.f_cout(vehicule.liste_clients)):
                     vehicule.liste_clients = s
             self.t*=self.a
-        # il faut un return ici
-
+        return vehicule.liste_clients
     
     def neighbour(s):
         """fonction qui, pour une solution s donnée, renvoie une solution N(s) voisine de s
