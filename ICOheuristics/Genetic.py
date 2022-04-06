@@ -13,7 +13,7 @@ class GeneticAgent(mesa.Agent):
         self.Pcross = pcross
         self.Pmut = pmut
         self.pop_size = taille
-        self.pop = []
+        self.pop = self.generateur(model)
         self.cout = []
         self.s = 0
         #self.dc = DataCollector({"solution": lambda m: self.f_main() })
@@ -23,6 +23,7 @@ class GeneticAgent(mesa.Agent):
             a = Liste_Clients(model)
             self.pop.append(a.add_liste_to_list(self.vehicule.clients.shuffle_list()))
             self.cout.append(self.vehicule.f_cout(self.pop[i].liste))
+        return(self.pop)
             
     def triInsertion(self,liste_couts,liste_pop):
         k = len(liste_couts)
