@@ -12,14 +12,6 @@ class Model(mesa.Model):
         self.verbose = verbose
         self.agents = {"deposits": {},"vehicles": {}, "clients": {}}
 
-    # def add_agent_in_routes(self,row,agent):
-    #     id = row['ROUTE_ID']
-    #     if not id in self.agents['routes']:
-    #         self.agents['routes'][id] = Deposit.Route(self,id)
-    #     self.agents['routes'][id].add_agent(agent, verbose = self.verbose)
-    #     return row
-    # self.add_agent_in_routes(row,self.agents['deposits'][id])
-
     def read_deposits(self, path):
         '''Reads deposits from file and returns pandas dataframe'''
         df = pandas.read_csv(path).reset_index()
@@ -38,7 +30,6 @@ class Model(mesa.Model):
             id = row['VEHICLE_CODE']
             if not id in self.agents['vehicles']:
                 self.agents['vehicles'][id] = Vehicle.Agent(self,row,w);
-            # self.add_agent_in_routes(row,self.agents['vehicles'][id])
         if self.verbose:
             print(df.shape,len(self.agents['vehicles']),"Vehicles")
         return df
@@ -50,12 +41,21 @@ class Model(mesa.Model):
             id = row['CUSTOMER_CODE']
             if not id in self.agents['clients']:
                 self.agents['clients'][id] = Client.Agent(self,row)
-            # self.add_agent_in_routes(row,self.agents['clients'][id])
         if self.verbose:
             print(df.shape,len(self.agents['clients']),"Clients")
         return df
+    
+    def assign_clients_to_deposits():
+        # Example:
+        for d in self.agents['deposit']:
+            print(d, self.agents['deposit'][d].add_route())
 
-
+    def assign_vehicles_to_deposits():
+        pass
+    def deposits_create_routes(k = 106):
+        pass
+    def create_routes(self):
+        pass
     def step(self):
         if self.planning:
             print("Planning!")

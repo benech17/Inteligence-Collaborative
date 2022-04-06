@@ -9,8 +9,9 @@ if __name__ == "__main__":
     model.read_deposits('Data/4_detail_table_depots.csv')
     model.read_vehicles('Data/3_detail_table_vehicles.csv', w = 0)
     model.read_clients('Data/2_detail_table_customers.csv')
-    # Now create the default routes
-    model.create_routes()
-    # Model now relates the agents
+    # Now assigns cliens and vehicles to deposits and create routes
+    # model.assign_vehicles_to_deposits()
+    # model.assign_clients_to_deposits()
+    # model.deposits_create_routes(k = 106)
 
     model.step() 
