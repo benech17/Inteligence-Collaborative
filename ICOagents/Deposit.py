@@ -18,6 +18,7 @@ class Route(mesa.Agent):
         self.id = model.current_id
         self.code = code
         self.agents = {"deposits": {},"vehicles": {}, "clients": {}}
+        self.vehicles = []
     def add_agent(self,agent, verbose = False):
         if type(agent) is Agent:
             self.agents['deposits'][agent.code] = agent
@@ -27,6 +28,8 @@ class Route(mesa.Agent):
             self.agents['clients'][agent.code] = agent
         elif verbose:
             print("Entity not found")
+    def 
+
 
 # def assign_clients(self,liste_vehicules,liste_client):
 #         # adapt
