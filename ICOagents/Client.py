@@ -20,6 +20,7 @@ class Liste_Clients(mesa.Agent):
     
     def add_liste_to_list(self, liste):
         self.liste = liste
+        return self
     
     def shuffle_list(self):
         self.liste = random.shuffle(self.liste)

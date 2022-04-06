@@ -12,18 +12,19 @@ class GeneticAgent(mesa.Agent):
         self.vehicule = vhl
         self.Pcross = pcross
         self.Pmut = pmut
-        self.pop_size = taille
-        self.pop = self.generateur(model)
+        self.popu_size = taille
         self.cout = []
+        self.popu = self.generateur(model)
         self.s = 0
         #self.dc = DataCollector({"solution": lambda m: self.f_main() })
     
     def generateur(self, model):
-        for i in range(self.pop_size) :
+        newl = []
+        for i in range(self.popu_size) :
             a = Liste_Clients(model)
-            self.pop.append(a.add_liste_to_list(self.vehicule.clients.shuffle_list()))
-            self.cout.append(self.vehicule.f_cout(self.pop[i].liste))
-        return(self.pop)
+            newl.append(a.add_liste_to_list(self.vehicule.clients.shuffle_list()))
+            self.cout.append(self.vehicule.f_cout(newl[i].liste))
+        return newl
             
     def triInsertion(self,liste_couts,liste_pop):
         k = len(liste_couts)
@@ -56,13 +57,13 @@ class GeneticAgent(mesa.Agent):
         return(S)
 
     def step(self):
-        forceTriee, prePopTriee = self.triInsertion(self.cout,self.pop)
+        forceTriee, prePopTriee = self.triInsertion(self.cout,self.popu)
         print(forceTriee, prePopTriee)
         # liste_clients_f = prePopTriee[0]
 
         # #construction de S(t), liste de solutions de classe Liste_Clients
         # listeProba = self.proba(forceTriee, prePopTriee)
-        # S1 = self.constructS(listeProba, self.pop_size)
+        # S1 = self.constructS(listeProba, self.popu_size)
           
         # #construction de S(t+1), liste de solutions de classe Liste_Clients
         # S2 = []
@@ -76,11 +77,11 @@ class GeneticAgent(mesa.Agent):
         #         S2.append(S1[i+1])
           
         # #construction de P(t+1)
-        # self.pop = []
+        # self.popu = []
         # for i in S2 :
         #     if rd.random() < self.Pmut :
-        #         self.pop.append(i.permutation_list())
+        #         self.popu.append(i.permutation_list())
         #     else :
-        #         self.pop.append(i)
+        #         self.popu.append(i)
         print("je suis dans le step")
         # return(liste_clients_f)

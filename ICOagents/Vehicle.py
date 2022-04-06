@@ -29,27 +29,27 @@ class Agent(mesa.Agent):
         self.vehicle_volume += client.total_volume_m3
         return(True)
     
-    def f_cout(self):
+    def f_cout(self, liste):
         d=0
-        n=len(self.clients.liste)
+        n=len(liste)
         for i in range(n-1):
-            d += self.clients.liste[i].calc_dist(self.clients.liste[i+1])
-        d+=self.clients.liste[0].depot_to_customer
-        d+=self.clients.liste[n-1].customer_to_depot
+            d += liste[i].calc_dist(liste[i+1])
+        d+=liste[0].depot_to_customer
+        d+=liste[n-1].customer_to_depot
         return self.omega + d*self.vehicle_fixed_cost_km
 
     def attribute_client_to_vehicle(self, client):
         if self.add_client_order(client) == True:
             self.clients.add_client_to_list(client)
 
-    def attribute_algorithm_to_vehicle(self, model, pcross, pmut, taille_pop, type):
-        if type == "genetic" :
+    def attribute_algorithm_to_vehicle(self, model, pcross, pmut, taille_pop, typea):
+        if typea == "genetic" :
             a = GeneticAgent(model, self, pcross, pmut, taille_pop)
             self.algorithm.append(a)
-        elif type == "rs" :
+        elif typea == "rs" :
             a = RSAgent(model)
             self.algorithm.append(a)
-        elif type == "Taboo" :
+        elif typea == "Taboo" :
             a = TabouAgent(model, self, taille_pop)
             self.algorithm.append(a)
 
