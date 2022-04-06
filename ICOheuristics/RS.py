@@ -1,7 +1,7 @@
 import mesa.time
 import random as rd
 from math import exp
-
+from mesa.datacollection import DataCollector
 
 class RSAgent(mesa.Agent):
     
@@ -16,8 +16,10 @@ class RSAgent(mesa.Agent):
         self.cout = 0    #cout de la solution actuelle
         self.a = 0.5
         self.w = 100
+        self.s1 = 1
+        self.dc = DataCollector({"solution": lambda m: self.neighbour() })
          
-    def step(self, vehicule):
+    def f_main(self, vehicule):
         s=vehicule.liste_clients
         cout_s = self.f_cout(s)
         while(self.nv_cycle):
@@ -42,7 +44,7 @@ class RSAgent(mesa.Agent):
                 if(cout_s < self.f_cout(vehicule.liste_clients)):
                     vehicule.liste_clients = s
             self.t*=self.a
-
+        # il faut un return ici
 
     
     def neighbour(s):
@@ -58,5 +60,9 @@ class RSAgent(mesa.Agent):
         s[j]=x
         return s
 
+    def step(self):
+        print("C'est le step",self.s1,"du agent",self.id)
+        self.s+=1
+        self.dc.collect(self)
 
 
