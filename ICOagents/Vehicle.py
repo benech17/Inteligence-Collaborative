@@ -3,8 +3,9 @@ import mesa
     
 class Agent(mesa.Agent):
     '''Vehicle Agent'''
-    def __init__(self, model, series, w = 0):
+    def __init__(self, model, series, w):
         super().__init__(model.next_id(), model)
+        self.id = model.current_id
         self.code = series['VEHICLE_CODE']
         self.vehicle_total_weight = series['VEHICLE_TOTAL_WEIGHT_KG']
         self.vehicle_total_volume = series['VEHICLE_TOTAL_VOLUME_M3']
@@ -37,13 +38,7 @@ class Agent(mesa.Agent):
     def attribute_client_to_vehicle(self, client):
         if self.add_client_order(client) == True:
             self.liste_clients.append(client)
-    
-    def verify0(self):
-        print("1. ",self.code,"verify=",self.verifier)
-
-    def verify1(self):
-        self.verifier+=1
-        print("1. ",self.code,"verify=",self.verifier)
 
     def step():
         pass
+
