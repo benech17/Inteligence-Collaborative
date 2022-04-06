@@ -10,7 +10,7 @@ class Model(mesa.Model):
         super().__init__()
         self.planning = True
         self.verbose = verbose
-        self.agents = {"deposits": {},"vehicles": {}, "clients": {}}
+        self.agents = {"deposits": {},"vehicles": {}, "clients": {}, "routes": {}}
 
     def read_deposits(self, path):
         '''Reads deposits from file and returns pandas dataframe'''
@@ -41,23 +41,19 @@ class Model(mesa.Model):
             id = row['CUSTOMER_CODE']
             if not id in self.agents['clients']:
                 self.agents['clients'][id] = Client.Agent(self,row)
+            route_id = row['ROUTE_ID']
+            if not route_id in self.agents['routes']:
+                self.agents['routes'][route_id] = Client.Liste_Clients(self)
+            self.agents['routes'][route_id].add_client_to_list(self.agents['clients'][id])
+        # Transforms routes in list
+        self.agents['routes'] = list(self.agents['routes'].items())
         if self.verbose:
-            print(df.shape,len(self.agents['clients']),"Clients")
+            print(df.shape,len(self.agents['clients']),"Clients.",len(self.agents['routes']),"Routes")
         return df
-    
-    def assign_clients_to_deposits():
-        # Example:
-        for d in self.agents['deposit']:
-            print(d, self.agents['deposit'][d].add_route())
 
-    def assign_vehicles_to_deposits():
-        pass
-    def deposits_create_routes(k = 106):
-        pass
-    def create_routes(self):
-        pass
     def step(self):
         if self.planning:
             print("Planning!")
+
         else:
             print("Delivering!")

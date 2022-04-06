@@ -18,7 +18,7 @@ class Agent(mesa.Agent):
         self.vehicle_volume = 0
         self.omega = w
         # A list of clients. Attention: Deposits should not be added
-        self.clients = Liste_Clients(self.id, model)
+        self.clients = Liste_Clients(model)
         self.algorithm = []
         self.verifier = 0
     

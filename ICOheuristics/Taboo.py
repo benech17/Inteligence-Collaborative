@@ -11,10 +11,8 @@ class TabouAgent(mesa.Agent):
         self.s = 0
         self.vehicule = vhl
         self.pop_size = taille
-        self.dc = DataCollector({"solution": lambda (m,n): self.f_main() })
+        # self.dc = DataCollector({"solution": lambda (m,n): self.f_main() })
         
-        
-    
     def ordre(solu,demande):
         newq=[];
         newq.clear();
@@ -77,4 +75,4 @@ class TabouAgent(mesa.Agent):
     def step(self):
         print("C'est le step",self.s,"du agent",self.id)
         self.s+=1
-        self.dc.collect(self)
+        # self.dc.collect(self)

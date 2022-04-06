@@ -14,8 +14,8 @@ class Agent(Geo.Agent):
 
 class Liste_Clients(mesa.Agent):
     '''Special list object that contains clients'''
-    def __init__(self, model, series):
-        super().__init__(model, series['ROUTE_ID'])
+    def __init__(self, model):
+        super().__init__(model.next_id(), model)
         self.liste = []
     
     def shuffle_list(self):
