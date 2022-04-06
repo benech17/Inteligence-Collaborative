@@ -46,11 +46,31 @@ class Model(mesa.Model):
                 self.agents['routes'][route_id] = Client.Liste_Clients(self)
             self.agents['routes'][route_id].add_client_to_list(self.agents['clients'][id])
         # Transforms routes in list
-        self.agents['routes'] = list(self.agents['routes'].items())
+        self.agents['routes'] = list(self.agents['routes'].values())
         if self.verbose:
             print(df.shape,len(self.agents['clients']),"Clients.",len(self.agents['routes']),"Routes")
         return df
 
+    def assign_clients_to_vehicle(self):
+        liste_vehicules =  list(self.agents['vehicles'].values())
+        # l = self.agents['routes'][2946091]
+        l = self.agents['routes'][0]
+        print(len(l.liste))
+        for l in self.agents['routes']:
+            for v in liste_vehicules:
+                j = 0
+                while v.add_client_order(l.liste[j]) != False:
+                    v.attribute_client_to_vehicle(l.liste[j])
+                    j += 1
+
+    def verify_vehicles(self):
+        total = 0
+        for v in self.agents['vehicles'].values():
+            t = len(v.clients.liste)
+            total+=t
+            print(t)
+        print(total)
+    
     def step(self):
         if self.planning:
             print("Planning!")

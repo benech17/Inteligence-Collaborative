@@ -9,6 +9,7 @@ if __name__ == "__main__":
     model.read_deposits('Data/4_detail_table_depots.csv')
     model.read_vehicles('Data/3_detail_table_vehicles.csv', w = 0)
     model.read_clients('Data/2_detail_table_customers.csv')
-    model.stop_planning()
-
+    # Assign clients to vehicles
+    model.assign_clients_to_vehicle()
+    model.verify_vehicles()
     model.step() 
