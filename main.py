@@ -1,21 +1,23 @@
 from ICOinterface import Streamlit
 from ICOmodel import Global
+from ICOinterface import Streamlit
 
 if __name__ == "__main__":
     '''Main function of the program'''
     # Creates the model and read files
     model = Global.Model(verbose = True)
     # Model reads files and create agents
+    Streamlit.say_hi()
     model.read_deposits('Data/4_detail_table_depots.csv')
-    model.read_vehicles('Data/3_detail_table_vehicles.csv', w = 0)
+    Streamlit.df_pandas(model.read_vehicles('Data/3_detail_table_vehicles.csv', w = 0))
     model.read_clients('Data/2_detail_table_customers.csv')
     # Assign clients to vehicles
-    model.assign_clients_to_vehicles()
-    model.assign_heuristics_to_vehicles()
-    model.step() 
-    model.planning = False
-    nb_ite = 100
-    for i in range(nb_ite):
-        model.step() 
-    model.plot_graphs(nb_ite)
+    # model.assign_clients_to_vehicles()
+    # model.assign_heuristics_to_vehicles()
+    # model.step() 
+    # model.planning = False
+    # nb_ite = 100
+    # for i in range(nb_ite):
+    #     model.step() 
+    # model.plot_graphs(nb_ite)
     print("Finished!")
