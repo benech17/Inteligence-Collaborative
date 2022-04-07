@@ -1,4 +1,4 @@
-import random
+import random as rd
 from ICOheuristics.Genetic import GeneticAgent
 from ICOheuristics.Taboo import TabouAgent
 import mesa
@@ -32,10 +32,19 @@ class Agent(mesa.Agent):
         d=0
         n=len(liste)
         for i in range(n-1):
-            d += liste[i].calc_dist(liste[i+1])
-        d+=liste[0].depot_to_customer
-        d+=liste[n-1].customer_to_depot
-        return self.omega + d*self.vehicle_fixed_cost_km
+            d += liste[i].distance(liste[i+1])
+        d+=0 #liste[0].depot_to_customer
+        d+=0 #liste[n-1].customer_to_depot
+        return self.omega + d*self.vehicle_variable_cost_km
+    
+    def generateur(self, popu_size):
+        newpop = []
+        newcout = []
+        for i in range(popu_size) :
+            newpop.append(self.clients.copy())
+            rd.shuffle(newpop[i])
+            newcout.append(self.f_cout(newpop[i]))
+        return newpop,newcout
 
     def attribute_client_to_vehicle(self, client):
         if self.add_client_order(client) == True:
@@ -43,7 +52,8 @@ class Agent(mesa.Agent):
 
     def attribute_algorithm_to_vehicle(self, model, pcross, pmut, taille_pop, typea):
         if typea == "genetic" :
-            a = GeneticAgent(model, self, pcross, pmut, taille_pop)
+            popu_init,cout_init = self.generateur(taille_pop)
+            a = GeneticAgent(model, self, pcross, pmut, taille_pop, popu_init, cout_init)
             self.algorithm.append(a)
         elif typea == "rs" :
             a = RSAgent(model)

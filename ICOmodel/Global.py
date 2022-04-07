@@ -1,6 +1,7 @@
 import mesa
 from mesa.time import RandomActivation
 import pandas
+import matplotlib.pyplot as plt
 
 from ICOagents import Client, Deposit, Vehicle
 
@@ -53,20 +54,38 @@ class Model(mesa.Model):
 
     def assign_clients_to_vehicles(self):
         liste_vehicules =  list(self.agents['vehicles'].values())
-        for l in self.agents['routes']:
-            for v in liste_vehicules:
-                j = 0
-                while v.add_client_order(l[j]) != False:
-                    v.attribute_client_to_vehicle(l[j])
-                    j += 1
+        l = self.agents['routes'][0]
+        for v in liste_vehicules:
+            j = 0
+            while v.add_client_order(l[j]) != False:
+                v.attribute_client_to_vehicle(l[j])
+                j += 1
+    
     def assign_heuristics_to_vehicles(self):
         self.schedule = mesa.time.RandomActivation(self)
         for v in self.agents['vehicles'].values():
-            v.attribute_algorithm_to_vehicle(self,0.01,0.2,10,"genetic")
+            v.attribute_algorithm_to_vehicle(self,0.1,0.01,100,"genetic")
             self.schedule.add(v)
+    
     def step(self):
         if self.planning:
             print("Planning!")
         else:
             self.schedule.step()
             print("Delivering!")
+    
+    def plot_graphs(self):
+        total = []
+        for v in self.agents['vehicles'].values():
+            for a in v.algorithm:
+                plt.plot(a.mins)
+                plt.title("Courbe de résultats de l'algorithme génétique")
+                plt.xlabel("Nombre d'itérations")
+                plt.ylabel('Coût trouvé')
+                plt.show()
+                total += a.mins
+        plt.plot(total)
+        plt.title("Courbe de résultats de l'algorithme génétique sur l'ensemble des véhicules")
+        plt.xlabel("Nombre d'itérations")
+        plt.ylabel('Coût trouvé')
+        plt.show()   

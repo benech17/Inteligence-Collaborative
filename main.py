@@ -16,4 +16,5 @@ if __name__ == "__main__":
     model.planning = False
     for i in range(10):
         model.step() 
+    model.plot_graphs()
     print("Finished!")

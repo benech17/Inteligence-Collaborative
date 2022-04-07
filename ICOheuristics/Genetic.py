@@ -6,23 +6,17 @@ from mesa.datacollection import DataCollector
 
 
 class GeneticAgent(mesa.Agent):
-    def __init__(self, model, vhl, pcross, pmut, taille):
+    def __init__(self, model, vhl, pcross, pmut, taille, popu_init, cout_init):
         super().__init__(model.next_id(), model)
         self.vehicule = vhl
         self.Pcross = pcross
         self.Pmut = pmut
         self.popu_size = taille
-        self.cout = []
-        self.popu = self.generateur()
+        self.popu = popu_init
+        self.cout = cout_init
         self.s = 0
+        self.mins = []
         #self.dc = DataCollector({"solution": lambda m: self.f_main() })
-    
-    def generateur(self):
-        newpop = []
-        for i in range(self.popu_size) :
-            newpop.append(rd.shuffle(self.vehicule.liste))
-            self.cout.append(self.vehicule.f_cout(newpop[i]))
-        return newpop
 
     def permutation_list(self, liste):
         result = liste.copy()
@@ -43,9 +37,9 @@ class GeneticAgent(mesa.Agent):
         for i in liste :
             instances = 0
             for j in range(len(resultat)):
-                if resultat[j].customer_code == i.customer_code and instances == 0 :
+                if resultat[j].code == i.code and instances == 0 :
                     instances += 1
-                elif resultat[j].customer_code == i.customer_code and instances == 1 :
+                elif resultat[j].code == i.code and instances == 1 :
                     Doublons.append([i,j])
             if instances == 0 :
                 Absents.append(i)
@@ -60,7 +54,7 @@ class GeneticAgent(mesa.Agent):
     def croisement_list(self, liste1, liste2):
         s = len(liste1)
         resultat1 = liste1.copy()
-        resultat2 = liste2.liste.copy()
+        resultat2 = liste2.copy()
         point = rd.randint(0, s-1)
         for i in range(point, s) :
             resultat1[i], resultat2[i] = resultat2[i], resultat1[i]
@@ -100,8 +94,8 @@ class GeneticAgent(mesa.Agent):
 
     def step(self):
         forceTriee, prePopTriee = self.triInsertion(self.cout,self.popu)
-        print(forceTriee, prePopTriee)
         liste_clients_f = prePopTriee[0]
+        cout_f = forceTriee[0]
 
         #construction de S(t), liste de solutions de classe Liste_Clients
         listeProba = self.proba(forceTriee, prePopTriee)
@@ -120,10 +114,16 @@ class GeneticAgent(mesa.Agent):
           
         #construction de P(t+1)
         self.popu = []
+        self.cout = []
         for i in S2 :
             if rd.random() < self.Pmut :
-                self.popu.append(self.permutation_list(i))
+                a = self.permutation_list(i)
+                self.popu.append(a)
+                self.cout.append(self.vehicule.f_cout(a))
             else :
                 self.popu.append(i)
+                self.cout.append(self.vehicule.f_cout(i))
+        
         print("je suis dans le step")
+        self.mins.append(cout_f)
         return(liste_clients_f)
