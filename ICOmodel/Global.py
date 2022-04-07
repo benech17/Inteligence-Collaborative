@@ -2,6 +2,7 @@ import mesa
 from mesa.time import RandomActivation
 import pandas
 import matplotlib.pyplot as plt
+import random as rd
 
 from ICOagents import Client, Deposit, Vehicle
 
@@ -52,9 +53,8 @@ class Model(mesa.Model):
             print(df.shape,len(self.agents['clients']),"Clients.",len(self.agents['routes']),"Routes")
         return df
 
-    def assign_clients_to_vehicles(self):
+    def assign_clients_to_vehicles(self,l):
         liste_vehicules =  list(self.agents['vehicles'].values())
-        l = self.agents['routes'][0]
         for v in liste_vehicules:
             j = 0
             while v.add_client_order(l[j]) != False:
@@ -64,7 +64,7 @@ class Model(mesa.Model):
     def assign_heuristics_to_vehicles(self):
         self.schedule = mesa.time.RandomActivation(self)
         for v in self.agents['vehicles'].values():
-            v.attribute_algorithm_to_vehicle(self,0.01,0.01,100,"genetic")
+            v.attribute_algorithm_to_vehicle(self,0.5,0.2,1000,"genetic")
             self.schedule.add(v)
     
     def step(self):
@@ -74,7 +74,7 @@ class Model(mesa.Model):
             self.schedule.step()
             print("Delivering!")
     
-    def plot_graphs(self,nb_ite):
+    def plot_graphs_agents(self,nb_ite):
         total = [0]*nb_ite
         for v in self.agents['vehicles'].values():
             for a in v.algorithm:
@@ -85,8 +85,25 @@ class Model(mesa.Model):
                 plt.show()
                 for i in range(len(a.mins)):
                     total[i] += a.mins[i]
-        plt.plot(total)
-        plt.title("Courbe de résultats de l'algorithme génétique sur l'ensemble des véhicules")
+        return(total[-1])
+    
+    def find_best_sol(self,route_num,nb_permut,nb_ite):
+        l = self.agents['routes'][route_num]
+        cout = 0
+        permutations_f = []
+        couts_f = []
+        for i in range(nb_permut):
+            a = l.copy()
+            rd.shuffle(a)
+            self.assign_clients_to_vehicles(a)
+            for i in range(nb_ite):
+                self.step()
+            cout = self.plot_graphs_agents(nb_ite)
+            if cout <= couts_f[-1]:
+                permutations_f.append(a)
+                couts_f.append(cout)
+        plt.plot(couts_f)
+        plt.title("Courbe de résultats de l'algorithme génétique total")
         plt.xlabel("Nombre d'itérations")
         plt.ylabel('Coût trouvé')
-        plt.show()   
+        plt.show()

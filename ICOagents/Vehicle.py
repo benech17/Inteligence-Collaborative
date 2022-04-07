@@ -33,7 +33,7 @@ class Agent(mesa.Agent):
         n=len(liste)
         for i in range(n-1):
             d += liste[i].distance(liste[i+1])
-        d+=0 #liste[0].depot_to_customer
+        d+=1 #liste[0].depot_to_customer
         d+=0 #liste[n-1].customer_to_depot
         return self.omega + d*self.vehicle_variable_cost_km
     
@@ -63,7 +63,10 @@ class Agent(mesa.Agent):
             self.algorithm.append(a)
 
     def step(self):
-        for i in self.algorithm :
-            i.step()
+        if len(self.clients) != 0:
+            for i in self.algorithm :
+                i.step()
+        else :
+            print("Le client est vide")
 
 
