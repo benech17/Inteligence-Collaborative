@@ -1,5 +1,6 @@
 from ICOinterface import Streamlit
 from ICOmodel import Global
+# from ICOinterface import Streamlit
 
 if __name__ == "__main__":
     '''Main function of the program'''
