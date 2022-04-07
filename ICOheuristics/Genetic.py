@@ -2,6 +2,7 @@ from ssl import PROTOCOL_TLS_SERVER
 import mesa
 import numpy as np
 import random as rd
+import math
 from mesa.datacollection import DataCollector
 
 
@@ -80,7 +81,7 @@ class GeneticAgent(mesa.Agent):
         k = len(liste_couts_tr)
         L = []    
         for i in range(0,k):
-            a = int((liste_couts_tr[k-1]/liste_couts_tr[i])*10)
+            a = int((math.exp(liste_couts_tr[k-1]/liste_couts_tr[i])-1)*10)
             for j in range(0,a):
                 L.append(liste_pop_tr[i])
         return(L)
@@ -124,6 +125,9 @@ class GeneticAgent(mesa.Agent):
                 self.popu.append(i)
                 self.cout.append(self.vehicule.f_cout(i))
         
+        if self.vehicule.f_cout(S2[0]) > self.vehicule.f_cout(liste_clients_f):
+            print("True")
+            S2[0] = liste_clients_f
         print("je suis dans le step")
         self.mins.append(cout_f)
         return(liste_clients_f)

@@ -64,7 +64,7 @@ class Model(mesa.Model):
     def assign_heuristics_to_vehicles(self):
         self.schedule = mesa.time.RandomActivation(self)
         for v in self.agents['vehicles'].values():
-            v.attribute_algorithm_to_vehicle(self,1,1,100,"genetic")
+            v.attribute_algorithm_to_vehicle(self,0.01,0.01,100,"genetic")
             self.schedule.add(v)
     
     def step(self):
