@@ -17,6 +17,7 @@ class GeneticAgent(mesa.Agent):
         self.cout = cout_init
         self.s = 0
         self.mins = []
+        self.prev_solus = []
         #self.dc = DataCollector({"solution": lambda m: self.f_main() })
 
     def permutation_list(self, liste):
@@ -129,4 +130,5 @@ class GeneticAgent(mesa.Agent):
             S2[0] = liste_clients_f
         print("je suis dans le step")
         self.mins.append(cout_f)
+        self.prev_solus.append(liste_clients_f)
         return(liste_clients_f)

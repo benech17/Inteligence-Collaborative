@@ -66,6 +66,6 @@ class Agent(mesa.Agent):
 
     def step(self):
         for i in self.algorithm :
-            self.clients = i.step()
+            i.step()
 
 

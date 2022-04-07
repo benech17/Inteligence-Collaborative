@@ -65,6 +65,7 @@ class Model(mesa.Model):
     def assign_heuristics_to_vehicles(self):
         self.schedule = mesa.time.RandomActivation(self)
         for v in self.agents['vehicles'].values():
+            v.algorithm = []
             v.attribute_algorithm_to_vehicle(self,0.5,0.2,100,"genetic")
             self.schedule.add(v)
     
@@ -78,7 +79,9 @@ class Model(mesa.Model):
     def plot_graphs_agents(self,nb_ite):
         total = [0]*nb_ite
         for v in self.agents['vehicles'].values():
-            if len(v.clients) == 1:
+            if len(v.clients) == 0:
+                evol_cout = [0]*nb_ite #simulation d'un aller-retour au dépot
+            elif len(v.clients) == 1:
                 evol_cout = [1]*nb_ite #simulation d'un aller-retour au dépot
             else:
                 for a in v.algorithm:
@@ -101,15 +104,23 @@ class Model(mesa.Model):
             sol = []
             a = l.copy()
             rd.shuffle(a)
+            self.agents['vehicles'].clear()
+            self.read_vehicles('Data/3_detail_table_vehicles.csv', w = 0)
             self.assign_clients_to_vehicles(a)
             self.assign_heuristics_to_vehicles()
             for i in range(nb_ite):
                 self.step()
             cout = self.plot_graphs_agents(nb_ite)
             for v in self.agents['vehicles'].values():
-                sol.append(v.clients)
+                b = []
+                for k in v.algorithm:
+                    for h in k.prev_solus[-1]:
+                        b.append(h.code) 
+                sol.append(b)
             permutations_f.append(sol) #permet de récupérer la meilleure solution associée à chaque route
             couts_f.append(cout)
+        print(permutations_f[0])
+        print(permutations_f[9])
         plt.plot(couts_f)
         plt.title("Evolution ")
         plt.xlabel("Nombre d'itérations")
