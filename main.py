@@ -14,7 +14,8 @@ if __name__ == "__main__":
     model.assign_heuristics_to_vehicles()
     model.step() 
     model.planning = False
-    for i in range(10):
+    nb_ite = 10
+    for i in range(nb_ite):
         model.step() 
-    model.plot_graphs()
+    model.plot_graphs(nb_ite)
     print("Finished!")

@@ -64,7 +64,7 @@ class Model(mesa.Model):
     def assign_heuristics_to_vehicles(self):
         self.schedule = mesa.time.RandomActivation(self)
         for v in self.agents['vehicles'].values():
-            v.attribute_algorithm_to_vehicle(self,0.1,0.01,100,"genetic")
+            v.attribute_algorithm_to_vehicle(self,1,1,100,"genetic")
             self.schedule.add(v)
     
     def step(self):
@@ -74,8 +74,8 @@ class Model(mesa.Model):
             self.schedule.step()
             print("Delivering!")
     
-    def plot_graphs(self):
-        total = []
+    def plot_graphs(self,nb_ite):
+        total = [0]*nb_ite
         for v in self.agents['vehicles'].values():
             for a in v.algorithm:
                 plt.plot(a.mins)
@@ -83,7 +83,8 @@ class Model(mesa.Model):
                 plt.xlabel("Nombre d'itérations")
                 plt.ylabel('Coût trouvé')
                 plt.show()
-                total += a.mins
+                for i in range(len(a.mins)):
+                    total[i] += a.mins[i]
         plt.plot(total)
         plt.title("Courbe de résultats de l'algorithme génétique sur l'ensemble des véhicules")
         plt.xlabel("Nombre d'itérations")
