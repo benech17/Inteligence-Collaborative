@@ -25,7 +25,7 @@ class GeneticAgent(mesa.Agent):
         i=rd.randint(0,n-1)
         j=rd.randint(0,n-1)
         while(i==j):
-            j=rd.randint(1,n-2)
+            j=rd.randint(0,n-1)
         x=result[i]
         result[i]=result[j]
         result[j]=x
@@ -126,7 +126,6 @@ class GeneticAgent(mesa.Agent):
                 self.cout.append(self.vehicule.f_cout(i))
         
         if self.vehicule.f_cout(S2[0]) > self.vehicule.f_cout(liste_clients_f):
-            print("True")
             S2[0] = liste_clients_f
         print("je suis dans le step")
         self.mins.append(cout_f)

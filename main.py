@@ -1,6 +1,5 @@
 from ICOinterface import Streamlit
 from ICOmodel import Global
-# from ICOinterface import Streamlit
 
 if __name__ == "__main__":
     '''Main function of the program'''
@@ -10,10 +9,8 @@ if __name__ == "__main__":
     model.read_deposits('Data/4_detail_table_depots.csv')
     model.read_vehicles('Data/3_detail_table_vehicles.csv', w = 0)
     model.read_clients('Data/2_detail_table_customers.csv')
-    # Assign clients to vehicles
-    model.assign_heuristics_to_vehicles()
     model.planning = False
-    nb_ite = 100
-    nb_permut = 100
+    nb_ite = 20
+    nb_permut = 10
     model.find_best_sol(0,nb_permut,nb_ite)
     print("Finished!")

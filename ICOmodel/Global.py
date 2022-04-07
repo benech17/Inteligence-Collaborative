@@ -56,6 +56,7 @@ class Model(mesa.Model):
     def assign_clients_to_vehicles(self,l):
         liste_vehicules =  list(self.agents['vehicles'].values())
         for v in liste_vehicules:
+            v.clients = []
             j = 0
             while v.add_client_order(l[j]) != False:
                 v.attribute_client_to_vehicle(l[j])
@@ -64,7 +65,7 @@ class Model(mesa.Model):
     def assign_heuristics_to_vehicles(self):
         self.schedule = mesa.time.RandomActivation(self)
         for v in self.agents['vehicles'].values():
-            v.attribute_algorithm_to_vehicle(self,0.5,0.2,1000,"genetic")
+            v.attribute_algorithm_to_vehicle(self,0.5,0.2,100,"genetic")
             self.schedule.add(v)
     
     def step(self):
@@ -77,14 +78,18 @@ class Model(mesa.Model):
     def plot_graphs_agents(self,nb_ite):
         total = [0]*nb_ite
         for v in self.agents['vehicles'].values():
-            for a in v.algorithm:
-                plt.plot(a.mins)
-                plt.title("Courbe de résultats de l'algorithme génétique")
-                plt.xlabel("Nombre d'itérations")
-                plt.ylabel('Coût trouvé')
-                plt.show()
-                for i in range(len(a.mins)):
-                    total[i] += a.mins[i]
+            if len(v.clients) == 1:
+                evol_cout = [1]*nb_ite #simulation d'un aller-retour au dépot
+            else:
+                for a in v.algorithm:
+                    plt.plot(a.mins)
+                    plt.title("Courbe de résultats de l'algorithme génétique")
+                    plt.xlabel("Nombre d'itérations")
+                    plt.ylabel('Coût trouvé')
+                    plt.show()
+                    evol_cout = a.mins
+            for i in range(nb_ite):
+                total[i] += evol_cout[i]
         return(total[-1])
     
     def find_best_sol(self,route_num,nb_permut,nb_ite):
@@ -93,17 +98,20 @@ class Model(mesa.Model):
         permutations_f = []
         couts_f = []
         for i in range(nb_permut):
+            sol = []
             a = l.copy()
             rd.shuffle(a)
             self.assign_clients_to_vehicles(a)
+            self.assign_heuristics_to_vehicles()
             for i in range(nb_ite):
                 self.step()
             cout = self.plot_graphs_agents(nb_ite)
-            if cout <= couts_f[-1]:
-                permutations_f.append(a)
-                couts_f.append(cout)
+            for v in self.agents['vehicles'].values():
+                sol.append(v.clients)
+            permutations_f.append(sol) #permet de récupérer la meilleure solution associée à chaque route
+            couts_f.append(cout)
         plt.plot(couts_f)
-        plt.title("Courbe de résultats de l'algorithme génétique total")
+        plt.title("Evolution ")
         plt.xlabel("Nombre d'itérations")
         plt.ylabel('Coût trouvé')
         plt.show()

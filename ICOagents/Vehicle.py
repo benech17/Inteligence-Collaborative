@@ -22,7 +22,7 @@ class Agent(mesa.Agent):
         self.verifier = 0
     
     def add_client_order(self, client):
-        if (self.vehicle_weight + client.total_weight_kg > self.vehicle_total_weight) or (self.vehicle_volume + client.total_volume_m3 > self.vehicle_total_volume):
+        if (self.vehicle_weight + client.total_weight_kg > self.vehicle_total_weight) or (self.vehicle_volume + client.total_volume_m3 > self.vehicle_total_volume) or (client in self.clients):
             return(False)
         self.vehicle_weight += client.total_weight_kg
         self.vehicle_volume += client.total_volume_m3
@@ -51,7 +51,9 @@ class Agent(mesa.Agent):
             self.clients.append(client)
 
     def attribute_algorithm_to_vehicle(self, model, pcross, pmut, taille_pop, typea):
-        if typea == "genetic" :
+        if len(self.clients) == 0 or len(self.clients) == 1 :
+            print("Unique client, ou pas de clients assignés")
+        elif typea == "genetic" :
             popu_init,cout_init = self.generateur(taille_pop)
             a = GeneticAgent(model, self, pcross, pmut, taille_pop, popu_init, cout_init)
             self.algorithm.append(a)
@@ -63,10 +65,7 @@ class Agent(mesa.Agent):
             self.algorithm.append(a)
 
     def step(self):
-        if len(self.clients) != 0:
-            for i in self.algorithm :
-                i.step()
-        else :
-            print("Le client est vide")
+        for i in self.algorithm :
+            self.clients = i.step()
 
 
