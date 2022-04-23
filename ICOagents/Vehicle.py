@@ -60,7 +60,7 @@ class Agent(mesa.Agent):
         elif typea == "rs" :
             a = RSAgent(model)
             self.algorithm.append(a)
-        elif typea == "Taboo" :
+        elif typea == "taboo" :
             a = TabouAgent(model, self, taille_pop)
             self.algorithm.append(a)
 

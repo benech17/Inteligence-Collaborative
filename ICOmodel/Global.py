@@ -67,6 +67,7 @@ class Model(mesa.Model):
         for v in self.agents['vehicles'].values():
             v.algorithm = []
             v.attribute_algorithm_to_vehicle(self,0.5,0.2,100,"genetic")
+            v.attribute_algorithm_to_vehicle(self,0.0,0.0,50,"taboo")
             self.schedule.add(v)
     
     def step(self):
@@ -86,7 +87,7 @@ class Model(mesa.Model):
             else:
                 for a in v.algorithm:
                     plt.plot(a.mins)
-                    plt.title("Courbe de résultats de l'algorithme génétique")
+                    plt.title("Courbe de résultats de l'algorithme " + type(a).__name__)
                     plt.xlabel("Nombre d'itérations")
                     plt.ylabel('Coût trouvé')
                     plt.show()
