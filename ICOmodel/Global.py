@@ -66,7 +66,9 @@ class Model(mesa.Model):
         self.schedule = mesa.time.RandomActivation(self)
         for v in self.agents['vehicles'].values():
             v.algorithm = []
-            v.attribute_algorithm_to_vehicle(self,0.5,0.2,100,"genetic")
+            v.attribute_algorithm_to_vehicle(self,0.5,0.2,100,0.0,0.0,"genetic")
+            v.attribute_algorithm_to_vehicle(self,0.0,0.0,50,0.0,0.0,"taboo")
+            v.attribute_algorithm_to_vehicle(self,0.0,0.0,0,5,0.9,"rs")
             self.schedule.add(v)
     
     def step(self):
@@ -76,26 +78,23 @@ class Model(mesa.Model):
             self.schedule.step()
             print("Delivering!")
     
-    def plot_graphs_agents(self,nb_ite):
-        total = [0]*nb_ite
+    def plot_graphs_agents(self,nb_ite,nb_algs):
+        total = [0]*nb_algs
         for v in self.agents['vehicles'].values():
-            if len(v.clients) == 0:
-                evol_cout = [0]*nb_ite #simulation d'un aller-retour au dépot
-            elif len(v.clients) == 1:
-                evol_cout = [1]*nb_ite #simulation d'un aller-retour au dépot
-            else:
-                for a in v.algorithm:
-                    plt.plot(a.mins)
-                    plt.title("Courbe de résultats de l'algorithme génétique")
+            if len(v.algorithm) != 0:
+                for i in range(nb_algs):
+                    plt.plot(v.algorithm[i].mins)
+                    plt.title("Courbe de résultats de l'algorithme " + type(v.algorithm[i]).__name__)
                     plt.xlabel("Nombre d'itérations")
                     plt.ylabel('Coût trouvé')
                     plt.show()
-                    evol_cout = a.mins
-            for i in range(nb_ite):
-                total[i] += evol_cout[i]
-        return(total[-1])
+                    if len(v.algorithm[i].mins) == 0 :
+                        total[i] += 0
+                    else :
+                        total[i] += v.algorithm[i].mins[-1]
+        return(total)
     
-    def find_best_sol(self,route_num,nb_permut,nb_ite):
+    def find_best_sol(self,route_num,nb_permut,nb_ite,nb_algs):
         l = self.agents['routes'][route_num]
         cout = 0
         permutations_f = []
@@ -110,7 +109,7 @@ class Model(mesa.Model):
             self.assign_heuristics_to_vehicles()
             for i in range(nb_ite):
                 self.step()
-            cout = self.plot_graphs_agents(nb_ite)
+            cout = self.plot_graphs_agents(nb_ite,nb_algs)
             for v in self.agents['vehicles'].values():
                 b = []
                 for k in v.algorithm:
@@ -119,10 +118,16 @@ class Model(mesa.Model):
                 sol.append(b)
             permutations_f.append(sol) #permet de récupérer la meilleure solution associée à chaque route
             couts_f.append(cout)
-        print(permutations_f[0])
-        print(permutations_f[9])
-        plt.plot(couts_f)
-        plt.title("Evolution ")
+        print(couts_f)
+        simultaneous = []
+        for i in range(nb_algs):
+            liste = []
+            for j in range(nb_permut):
+                liste.append(couts_f[j][i])
+            simultaneous.append(liste)
+        for i in simultaneous:
+            plt.plot(i)
+        plt.title("Evolution pour chaque algo")
         plt.xlabel("Nombre d'itérations")
         plt.ylabel('Coût trouvé')
         plt.show()

@@ -1,6 +1,7 @@
 import random as rd
 from ICOheuristics.Genetic import GeneticAgent
 from ICOheuristics.Taboo import TabouAgent
+from ICOheuristics.RS import RSAgent
 import mesa
     
 class Agent(mesa.Agent):
@@ -50,7 +51,7 @@ class Agent(mesa.Agent):
         if self.add_client_order(client) == True:
             self.clients.append(client)
 
-    def attribute_algorithm_to_vehicle(self, model, pcross, pmut, taille_pop, typea):
+    def attribute_algorithm_to_vehicle(self, model, pcross, pmut, taille_pop, iter_cycle, refroidissement, typea):
         if len(self.clients) == 0 or len(self.clients) == 1 :
             print("Unique client, ou pas de clients assignés")
         elif typea == "genetic" :
@@ -58,9 +59,9 @@ class Agent(mesa.Agent):
             a = GeneticAgent(model, self, pcross, pmut, taille_pop, popu_init, cout_init)
             self.algorithm.append(a)
         elif typea == "rs" :
-            a = RSAgent(model)
+            a = RSAgent(model, self, iter_cycle, refroidissement)
             self.algorithm.append(a)
-        elif typea == "Taboo" :
+        elif typea == "taboo" :
             a = TabouAgent(model, self, taille_pop)
             self.algorithm.append(a)
 

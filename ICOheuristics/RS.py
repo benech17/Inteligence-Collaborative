@@ -4,64 +4,54 @@ from math import exp
 from mesa.datacollection import DataCollector
 
 class RSAgent(mesa.Agent):
-    
-    def __init__(self,id, model):
-        super().__init__(id, model)
-        self.id = id        
-        #self.s_et=vehicule.liste_clients  #solution actuelle
+    def __init__(self,model,vhl,iter_cycle,refroidissement):
+        super().__init__(model.next_id(), model)
+        self.vehicule = vhl
         self.nb_iter =0  #nombre d'itérations
-        self.nb_iter_cycle = 2    #nombre d'itérations par cycle
+        self.nb_iter_cycle = iter_cycle    #nombre d'itérations par cycle
+        self.nb_iter =0  #nombre d'itérations
         self.nv_cycle = True   #s'agit-il d'un nouveau cycle ou non
-        self.t=100   #température
-        self.cout = 0    #cout de la solution actuelle
-        self.a = 0.5
-        self.w = 100
-        self.s1 = 1
-        self.dc = DataCollector({"solution": lambda m: self.f_main() })
-         
-    def f_main(self, vehicule):
-        s=vehicule.liste_clients
-        cout_s = self.f_cout(s)
-        while(self.nv_cycle):
-            self.nb_iter=0
-            self.nv_cycle=False
-            while(self.nb_iter<self.nb_iter_cycle and self.t!=0):
-                self.nb_iter+=1
-                s1 = self.neighbour(s)
-                cout_s1 = self.f_cout(s1)
-                df=cout_s1 - cout_s
-                if(df<0):
-                    s=s1
-                    cout_s=cout_s1
-                    self.nv_cycle=True
-                else:
-                    prob=exp(-df/self.t)
-                    q=rd.random()
-                    if(q<prob):
-                        s=s1
-                        cout_s=cout_s1
-                        self.nv_cycle=True
-                if(cout_s < self.f_cout(vehicule.liste_clients)):
-                    vehicule.liste_clients = s
-            self.t*=self.a
-        return vehicule.liste_clients
+        self.temp = 100   #température
+        self.prev_solus = [self.vehicule.clients.copy()]
+        self.mins = []
+        self.liste_clients_f = self.prev_solus[-1].copy()
+        self.a = refroidissement
+        #self.dc = DataCollector({"solution": lambda m: self.f_main() })
     
-    def neighbour(s):
-        """fonction qui, pour une solution s donnée, renvoie une solution N(s) voisine de s
-            voisine veut dire ici qu'il n'y a qu'une permutation entre les deux solutions"""
-        n=len(s)
-        i=rd.randint(1,n-2)
-        j=rd.randint(1,n-2)
+    def permutation_list(self, liste):
+        result = liste.copy()
+        n=len(result)
+        i=rd.randint(0,n-1)
+        j=rd.randint(0,n-1)
         while(i==j):
-            j=rd.randint(1,n-2)
-        x=s[i]
-        s[i]=s[j]
-        s[j]=x
-        return s
+            j=rd.randint(0,n-1)
+        x=result[i]
+        result[i]=result[j]
+        result[j]=x
+        return(result)
 
     def step(self):
-        print("C'est le step",self.s1,"du agent",self.id)
-        self.s+=1
-        self.dc.collect(self)
+        if(self.nv_cycle):
+            self.nb_iter = 0
+            self.nv_cycle = False
+            while self.nb_iter < self.nb_iter_cycle :
+                self.nb_iter += 1
+                solu_voisine = self.permutation_list(self.liste_clients_f)
+                df = self.vehicule.f_cout(solu_voisine) - self.vehicule.f_cout(self.liste_clients_f)
+                if df < 0 :
+                    self.liste_clients_f = solu_voisine
+                    self.nv_cycle=True
+                else:
+                    prob = exp(-df/self.temp)
+                    q=rd.random()
+                    if q < prob :
+                        self.liste_clients_f = solu_voisine
+                        self.nv_cycle=True
+                if self.vehicule.f_cout(self.liste_clients_f) < self.vehicule.f_cout(self.prev_solus[-1]) :
+                    self.prev_solus.append(self.liste_clients_f)
+                    self.mins.append(self.vehicule.f_cout(self.liste_clients_f))
+            self.temp *= self.a
+        print("je suis dans le step")
+        return(self.liste_clients_f)
 
 
