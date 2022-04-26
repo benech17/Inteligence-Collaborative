@@ -9,5 +9,6 @@ class Agent(Geo.Agent):
         self.number_of_articles = series['NUMBER_OF_ARTICLES']
         self.total_weight_kg = series['TOTAL_WEIGHT_KG']
         self.total_volume_m3 = series['TOTAL_VOLUME_M3']
+        self.cluster = -1
     def step():
         pass

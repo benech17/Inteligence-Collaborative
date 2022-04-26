@@ -1,8 +1,7 @@
 import mesa
 from mesa.time import RandomActivation
 import pandas
-import matplotlib.pyplot as plt
-import random as rd
+import random
 
 from ICOagents import Client, Deposit, Vehicle
 
@@ -52,6 +51,10 @@ class Model(mesa.Model):
         if self.verbose:
             print(df.shape,len(self.agents['clients']),"Clients.",len(self.agents['routes']),"Routes")
         return df
+
+    def make_clusters(self):
+        pass
+
 
     def assign_clients_to_vehicles(self,l):
         liste_vehicules =  list(self.agents['vehicles'].values())
@@ -104,7 +107,7 @@ class Model(mesa.Model):
         for i in range(nb_permut):
             sol = []
             a = l.copy()
-            rd.shuffle(a)
+            random.shuffle(a)
             self.agents['vehicles'].clear()
             self.read_vehicles('Data/3_detail_table_vehicles.csv', w = 0)
             self.assign_clients_to_vehicles(a)
@@ -122,8 +125,8 @@ class Model(mesa.Model):
             couts_f.append(cout)
         print(permutations_f[0])
         print(permutations_f[9])
-        plt.plot(couts_f)
-        plt.title("Evolution ")
-        plt.xlabel("Nombre d'itérations")
-        plt.ylabel('Coût trouvé')
-        plt.show()
+        # plt.plot(couts_f)
+        # plt.title("Evolution ")
+        # plt.xlabel("Nombre d'itérations")
+        # plt.ylabel('Coût trouvé')
+        # plt.show()
