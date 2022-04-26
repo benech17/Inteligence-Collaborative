@@ -126,8 +126,8 @@ class GeneticAgent(mesa.Agent):
                 self.popu.append(i)
                 self.cout.append(self.vehicule.f_cout(i))
         
-        if self.vehicule.f_cout(S2[0]) > self.vehicule.f_cout(liste_clients_f):
-            S2[0] = liste_clients_f
+        if self.cout[0] > self.vehicule.f_cout(liste_clients_f):
+            self.popu[0] = liste_clients_f
         print("je suis dans le step")
         self.mins.append(cout_f)
         self.prev_solus.append(liste_clients_f)
