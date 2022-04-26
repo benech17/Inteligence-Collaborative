@@ -1,4 +1,4 @@
-from ICOinterface import Streamlit
+# from ICOinterface import Streamlit
 from ICOmodel import Global
 import random
 
@@ -9,23 +9,23 @@ if __name__ == "__main__":
     # Model reads files and create agents
     deps = model.read_deposits('Data/4_detail_table_depots.csv')
     clis = model.read_clients('Data/2_detail_table_customers.csv')
-    model.assign_clusters_to_vehicles()
-
+    
+    # model.assign_clusters_to_vehicles()
     # Comment everything here if you don't want streamlit viz!
-    Streamlit.title('Welcolme to ICOnprend Rien')
-    Streamlit.text("Created by Andreis, Colin, Mehdi, Yaniv, Paul and James")
-    Streamlit.header("1. Data")
-    Streamlit.text("Let's start by reading the data with Pandas")
-    Streamlit.text("Here are the deposits")
-    Streamlit.table(deps)
-    Streamlit.text("Here are the clients")
-    Streamlit.table(clis)
-    Streamlit.header("2. Map")
-    Streamlit.text("Let's start by plotting the map with the clustering")
-    Streamlit.map(model)
+    # Streamlit.title('Welcolme to ICOnprend Rien')
+    # Streamlit.text("Created by Andreis, Colin, Mehdi, Yaniv, Paul and James")
+    # Streamlit.header("1. Data")
+    # Streamlit.text("Let's start by reading the data with Pandas")
+    # Streamlit.text("Here are the deposits")
+    # Streamlit.table(deps)
+    # Streamlit.text("Here are the clients")
+    # Streamlit.table(clis)
+    # Streamlit.header("2. Map")
+    # Streamlit.text("Let's start by plotting the map with the clustering")
+    # Streamlit.map(model)
     
     nb_ite = 50
-    nb_permut = 10
+    nb_permut = 1
     route_num = 0
     nb_algs = 3
     l = model.agents['routes'][route_num]
@@ -40,8 +40,40 @@ if __name__ == "__main__":
         model.read_vehicles('Data/3_detail_table_vehicles.csv', w = 0)
         model.assign_clients_to_vehicles(a)
         model.assign_heuristics_to_vehicles()
+        
         for i in range(nb_ite):
             model.step()
+        
+        #test algo QLearning
+        list_vehicles = []
+        for v in model.agents['vehicles'].values():
+            list_vehicles.append(v)
+        
+        for h in list_vehicles: 
+            b = []
+            for k in h.clients:
+                b.append(k.code) 
+            sol.append(b)
+        print(sol)
+            
+        list_vehicles[2].intra_route_swap()
+        list_vehicles[1].inter_route_swap(list_vehicles[3])
+        list_vehicles[0].intra_route_shift()
+        list_vehicles[3].inter_route_shift(list_vehicles[4])
+        list_vehicles[5].two_intra_route_swap()
+        list_vehicles[6].two_intra_route_shift()
+        
+        
+        sol = []
+        for h in list_vehicles: 
+            b = []
+            for k in h.clients:
+                b.append(k.code) 
+            sol.append(b)
+        
+        print(sol)
+        
+        sol = []
         # Parte cout
         total = [0]*nb_algs
         for v in model.agents['vehicles'].values():
@@ -71,4 +103,4 @@ if __name__ == "__main__":
         for j in range(nb_permut):
             liste.append(couts_f[j][i])
         simultaneous.append(liste)
-    Streamlit.plot_solutions(simultaneous)
+    #Streamlit.plot_solutions(simultaneous)

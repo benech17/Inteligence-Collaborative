@@ -70,8 +70,9 @@ class Model(mesa.Model):
         for v in liste_vehicules:
             v.clients = []
             j = 0
-            while v.add_client_order(l[j]) != False:
+            while j < len(l) and v.add_client_order(l[j]) != False:
                 v.attribute_client_to_vehicle(l[j])
+                l.pop(j)
                 j += 1
     
     def assign_heuristics_to_vehicles(self):
@@ -82,6 +83,33 @@ class Model(mesa.Model):
             v.attribute_algorithm_to_vehicle(self,0.0,0.0,50,0.0,0.0,"taboo")
             v.attribute_algorithm_to_vehicle(self,0.0,0.0,0,10,0.9,"rs")
             self.schedule.add(v)
+
+    def remove_road(self,typea,liste_vehicules):
+        nb_clients = []
+        i_selec = 0
+        
+        for v in liste_vehicules:
+            nb_clients.append(len(v.clients))
+        
+        if typea == "smallest":
+            min_clients = nb_clients[0]
+            for i in range(len(liste_vehicules)):
+                if min_clients > nb_clients[i] and nb_clients[i] != 0:
+                    min_clients = nb_clients[i]
+                    i_selec = i
+        elif typea == "random":
+            i_selec = random.randint(len(liste_vehicules))
+        
+        redistrib = liste_vehicules[i_selec].clients.copy()
+        liste_vehicules[i_selec].clients = []
+        nb_clients[i_selec] = 0
+        for i in range(len(liste_vehicules)):
+            if nb_clients[i] != 0:
+                for j in redistrib:
+                    while liste_vehicules[i].add_client_order(j) != False:
+                        v.attribute_client_to_vehicle(j)
+                        redistrib.pop(j)
+        liste_vehicules[i_selec].clients = redistrib
 
     def step(self):
         self.schedule.step()
