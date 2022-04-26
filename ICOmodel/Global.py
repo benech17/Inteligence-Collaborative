@@ -3,6 +3,8 @@ from mesa.time import RandomActivation
 import pandas
 import random
 
+import matplotlib.pyplot as plt
+
 from ICOagents import Client, Deposit, Vehicle
 
 class Model(mesa.Model):
@@ -81,21 +83,21 @@ class Model(mesa.Model):
             self.schedule.step()
             print("Delivering!")
     
-    # def plot_graphs_agents(self,nb_ite,nb_algs):
-    #     total = [0]*nb_algs
-    #     for v in self.agents['vehicles'].values():
-    #         if len(v.algorithm) != 0:
-    #             for i in range(nb_algs):
-    #                 plt.plot(v.algorithm[i].mins)
-    #                 plt.title("Courbe de résultats de l'algorithme " + type(v.algorithm[i]).__name__)
-    #                 plt.xlabel("Nombre d'itérations")
-    #                 plt.ylabel('Coût trouvé')
-    #                 plt.show()
-    #                 if len(v.algorithm[i].mins) == 0 :
-    #                     total[i] += 0
-    #                 else :
-    #                     total[i] += v.algorithm[i].mins[-1]
-    #     return(total)
+    def plot_graphs_agents(self,nb_ite,nb_algs):
+        total = [0]*nb_algs
+        for v in self.agents['vehicles'].values():
+            if len(v.algorithm) != 0:
+                for i in range(nb_algs):
+                    plt.plot(v.algorithm[i].mins)
+                    plt.title("Courbe de résultats de l'algorithme " + type(v.algorithm[i]).__name__)
+                    plt.xlabel("Nombre d'itérations")
+                    plt.ylabel('Coût trouvé')
+                    plt.show()
+                    if len(v.algorithm[i].mins) == 0 :
+                        total[i] += 0
+                    else :
+                        total[i] += v.algorithm[i].mins[-1]
+        return(total)
     
     def find_best_sol(self,route_num,nb_permut,nb_ite,nb_algs):
         l = self.agents['routes'][route_num]
@@ -128,9 +130,9 @@ class Model(mesa.Model):
             for j in range(nb_permut):
                 liste.append(couts_f[j][i])
             simultaneous.append(liste)
-        # for i in simultaneous:
-        #     plt.plot(i)
-        # plt.title("Evolution pour chaque algo")
-        # plt.xlabel("Nombre d'itérations")
-        # plt.ylabel('Coût trouvé')
-        # plt.show()
+        for i in simultaneous:
+            plt.plot(i)
+        plt.title("Evolution pour chaque algo")
+        plt.xlabel("Nombre d'itérations")
+        plt.ylabel('Coût trouvé')
+        plt.show()
