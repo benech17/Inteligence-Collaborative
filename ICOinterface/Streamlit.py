@@ -1,22 +1,30 @@
-import streamlit
+from scipy.cluster.hierarchy import dendrogram
 from streamlit_folium import folium_static
-import folium
 import matplotlib.pyplot
+import streamlit
+import folium
 
-def introduction():
-    streamlit.title('Welcolme to ICOnprend Rien')
-    streamlit.write("Created by Andreis, Colin, Mehdi, Yaniv, Paul and James")
-    
+def title(str):
+    streamlit.title(str)
+def text(str):
+    streamlit.write(str)
+def header(str):
+    streamlit.header(str)    
+def table(dataframe):
+    streamlit.dataframe(dataframe)
+
 
 def map(model):
     colors = ['red', 'blue', 'green', 'purple', 'orange', 'darkred','lightred', 'beige', 'darkblue', 'darkgreen', 'cadetblue', 'darkpurple', 'white', 'pink', 'lightblue', 'lightgreen', 'gray', 'black', 'lightgray']
     deposits = model.agents['deposits']
     center = list(deposits.values())[0]
     clients = model.agents['clients']
+    client_routes_id = {clients[client].route_id: 1 for client in clients}
+    for i,route in enumerate(client_routes_id):
+        client_routes_id[route] = colors[i]
     m = folium.Map(location=[center.lat,center.lon], zoom_start=12)
     for deposit in deposits.values():
         folium.Marker([deposit.lat, deposit.lon], icon=folium.Icon(color=colors[-2], icon="cloud")).add_to(m)
     for client in clients.values():
-        folium.Marker([client.lat, client.lon], icon=folium.Icon(color=colors[client.cluster])).add_to(m)
+        folium.Marker([client.lat, client.lon], icon=folium.Icon(color=client_routes_id[client.route_id])).add_to(m)
     folium_static(m)
-    pass

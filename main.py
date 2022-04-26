@@ -6,16 +6,26 @@ if __name__ == "__main__":
     # Creates the model and read files
     model = Global.Model(verbose = True)
     # Model reads files and create agents
-    model.read_deposits('Data/4_detail_table_depots.csv')
-    model.read_clients('Data/2_detail_table_customers.csv')
-    # model.planning = False
-    # nb_ite = 50
-    # nb_permut = 10
-    # model.find_best_sol(0,nb_permut,nb_ite)
-    # print("Finished!")
+    deps = model.read_deposits('Data/4_detail_table_depots.csv')
+    clis = model.read_clients('Data/2_detail_table_customers.csv')
+    model.assign_clusters_to_vehicles()
 
-
-    # Vizualisation
-    # Comment if you don't have streamlit
-    Streamlit.introduction()
+    # Comment everything here if you don't want streamlit viz!
+    Streamlit.title('Welcolme to ICOnprend Rien')
+    Streamlit.text("Created by Andreis, Colin, Mehdi, Yaniv, Paul and James")
+    Streamlit.header("1. Data")
+    Streamlit.text("Let's start by reading the data with Pandas")
+    Streamlit.text("Here are the deposits")
+    Streamlit.table(deps)
+    Streamlit.text("Here are the clients")
+    Streamlit.table(clis)
+    Streamlit.header("2. Map")
+    Streamlit.text("Let's start by plotting the map with the clustering")
     Streamlit.map(model)
+    
+
+    model.planning = False
+    nb_ite = 50
+    nb_permut = 10
+    model.find_best_sol(0,nb_permut,nb_ite)
+    print("Finished!")

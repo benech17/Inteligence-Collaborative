@@ -1,7 +1,8 @@
-import mesa
+from sklearn.cluster import AgglomerativeClustering
 from mesa.time import RandomActivation
 import pandas
 import random
+import mesa
 
 import matplotlib.pyplot as plt
 
@@ -42,9 +43,9 @@ class Model(mesa.Model):
         df = pandas.read_csv(path).reset_index()
         for index, row in df.iterrows():
             id = row['CUSTOMER_CODE']
+            route_id = row['ROUTE_ID']
             if not id in self.agents['clients']:
                 self.agents['clients'][id] = Client.Agent(self,row)
-            route_id = row['ROUTE_ID']
             if not route_id in self.agents['routes']:
                 self.agents['routes'][route_id] = []
             self.agents['routes'][route_id].append(self.agents['clients'][id])
@@ -55,8 +56,17 @@ class Model(mesa.Model):
         return df
 
     def make_clusters(self):
-        pass
+        model = AgglomerativeClustering(n_clusters=10, compute_distances=True)
+        X = clients[['CUSTOMER_LATITUDE','CUSTOMER_LONGITUDE']]
+        model = model.fit(X)
 
+    def assign_clusters_to_vehicles(self):
+        print("hey 2")
+        clients = [[client.lat, client.lon] for client in self.agents['clients'].values()]
+        clustering = AgglomerativeClustering(n_clusters=10, compute_distances=True)
+        results = clustering.fit_predict(clients)
+        for i,client in enumerate(self.agents['clients']):
+            self.agents['clients'][client].route_id = results[i]
 
     def assign_clients_to_vehicles(self,l):
         liste_vehicules =  list(self.agents['vehicles'].values())
