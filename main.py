@@ -1,6 +1,7 @@
 # from ICOinterface import Streamlit
 from ICOmodel import Global
 import random
+import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     '''Main function of the program'''
@@ -9,8 +10,8 @@ if __name__ == "__main__":
     # Model reads files and create agents
     deps = model.read_deposits('Data/4_detail_table_depots.csv')
     clis = model.read_clients('Data/2_detail_table_customers.csv')
-    
     # model.assign_clusters_to_vehicles()
+    
     # Comment everything here if you don't want streamlit viz!
     # Streamlit.title('Welcolme to ICOnprend Rien')
     # Streamlit.text("Created by Andreis, Colin, Mehdi, Yaniv, Paul and James")
@@ -62,7 +63,7 @@ if __name__ == "__main__":
         list_vehicles[3].inter_route_shift(list_vehicles[4])
         list_vehicles[5].two_intra_route_swap()
         list_vehicles[6].two_intra_route_shift()
-        
+        model.remove_road("smallest", list_vehicles)
         
         sol = []
         for h in list_vehicles: 
@@ -79,11 +80,11 @@ if __name__ == "__main__":
         for v in model.agents['vehicles'].values():
             if len(v.algorithm) != 0:
                 for i in range(nb_algs):
-                    # plt.plot(v.algorithm[i].mins)
-                    # plt.title("Courbe de résultats de l'algorithme " + type(v.algorithm[i]).__name__)
-                    # plt.xlabel("Nombre d'itérations")
-                    # plt.ylabel('Coût trouvé')
-                    # plt.show()
+                    plt.plot(v.algorithm[i].mins)
+                    plt.title("Courbe de résultats de l'algorithme " + type(v.algorithm[i]).__name__)
+                    plt.xlabel("Nombre d'itérations")
+                    plt.ylabel('Coût trouvé')
+                    plt.show()
                     if len(v.algorithm[i].mins) == 0 :
                         total[i] += 0
                     else :

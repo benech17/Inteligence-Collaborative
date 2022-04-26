@@ -48,6 +48,7 @@ class TabouAgent(mesa.Agent):
         else:
             self.count += 1
         self.taboo.append(cle)
+        print("taboo")
         self.mins.append(self.vehicule.f_cout(liste_clients_f))
         self.prev_solus.append(liste_clients_f)
         return(liste_clients_f)

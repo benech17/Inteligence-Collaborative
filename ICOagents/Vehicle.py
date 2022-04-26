@@ -23,7 +23,9 @@ class Agent(mesa.Agent):
         self.verifier = 0
     
     def add_client_order(self, client):
-        if (self.vehicle_weight + client.total_weight_kg > self.vehicle_total_weight) or (self.vehicle_volume + client.total_volume_m3 > self.vehicle_total_volume) or (client in self.clients):
+        if client == 0:
+            return(False)
+        elif (self.vehicle_weight + client.total_weight_kg > self.vehicle_total_weight) or (self.vehicle_volume + client.total_volume_m3 > self.vehicle_total_volume) or (client in self.clients):
             return(False)
         self.vehicle_weight += client.total_weight_kg
         self.vehicle_volume += client.total_volume_m3
@@ -50,6 +52,8 @@ class Agent(mesa.Agent):
     def attribute_client_to_vehicle(self, client):
         if self.add_client_order(client) == True:
             self.clients.append(client)
+            return(True)
+        return(False)
 
     def attribute_algorithm_to_vehicle(self, model, pcross, pmut, taille_pop, iter_cycle, refroidissement, typea):
         if len(self.clients) == 0 and len(self.clients) == 1 :

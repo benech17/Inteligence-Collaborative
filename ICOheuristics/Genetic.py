@@ -128,6 +128,7 @@ class GeneticAgent(mesa.Agent):
         
         if self.cout[0] > self.vehicule.f_cout(liste_clients_f):
             self.popu[0] = liste_clients_f
+        print("gen")
         self.mins.append(cout_f)
         self.prev_solus.append(liste_clients_f)
         return(liste_clients_f)

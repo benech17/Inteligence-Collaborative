@@ -2,6 +2,7 @@ from sklearn.cluster import AgglomerativeClustering
 from mesa.time import RandomActivation
 import pandas
 import mesa
+import random
 
 import matplotlib.pyplot as plt
 
@@ -98,18 +99,26 @@ class Model(mesa.Model):
                     min_clients = nb_clients[i]
                     i_selec = i
         elif typea == "random":
-            i_selec = random.randint(len(liste_vehicules))
+            i_selec = random.randint(0,len(liste_vehicules)-1)
+            if nb_clients[i_selec] == 0:
+                while nb_clients[i_selec] == 0:
+                    i_selec = random.randint(0,len(liste_vehicules)-1)
         
         redistrib = liste_vehicules[i_selec].clients.copy()
         liste_vehicules[i_selec].clients = []
+        liste_vehicules[i_selec].vehicle_weight = 0
+        liste_vehicules[i_selec].vehicle_volume = 0
         nb_clients[i_selec] = 0
+        
         for i in range(len(liste_vehicules)):
             if nb_clients[i] != 0:
-                for j in redistrib:
-                    while liste_vehicules[i].add_client_order(j) != False:
-                        v.attribute_client_to_vehicle(j)
-                        redistrib.pop(j)
-        liste_vehicules[i_selec].clients = redistrib
+                for j in range(len(redistrib)):
+                    val = v.attribute_client_to_vehicle(redistrib[j])
+                    if val == True:
+                        redistrib[j] = 0
+                        
+        for k in redistrib:
+            liste_vehicules[i_selec].attribute_client_to_vehicle(k)
 
     def step(self):
         self.schedule.step()
