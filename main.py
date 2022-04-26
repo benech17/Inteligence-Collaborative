@@ -1,5 +1,6 @@
 from ICOinterface import Streamlit
 from ICOmodel import Global
+import random
 
 if __name__ == "__main__":
     '''Main function of the program'''
@@ -23,5 +24,51 @@ if __name__ == "__main__":
     Streamlit.text("Let's start by plotting the map with the clustering")
     Streamlit.map(model)
     
-    plots = model.find_best_sol(0,50,10,3)
-    Streamlit.plot_solutions(plots)
+    nb_ite = 50
+    nb_permut = 10
+    route_num = 0
+    nb_algs = 3
+    l = model.agents['routes'][route_num]
+    cout = 0
+    permutations_f = []
+    couts_f = []
+    for i in range(nb_permut):
+        sol = []
+        a = l.copy()
+        random.shuffle(a)
+        model.agents['vehicles'].clear()
+        model.read_vehicles('Data/3_detail_table_vehicles.csv', w = 0)
+        model.assign_clients_to_vehicles(a)
+        model.assign_heuristics_to_vehicles()
+        for i in range(nb_ite):
+            model.step()
+        # Parte cout
+        total = [0]*nb_algs
+        for v in model.agents['vehicles'].values():
+            if len(v.algorithm) != 0:
+                for i in range(nb_algs):
+                    # plt.plot(v.algorithm[i].mins)
+                    # plt.title("Courbe de résultats de l'algorithme " + type(v.algorithm[i]).__name__)
+                    # plt.xlabel("Nombre d'itérations")
+                    # plt.ylabel('Coût trouvé')
+                    # plt.show()
+                    if len(v.algorithm[i].mins) == 0 :
+                        total[i] += 0
+                    else :
+                        total[i] += v.algorithm[i].mins[-1]
+        cout = total
+        for v in model.agents['vehicles'].values():
+            b = []
+            for k in v.algorithm:
+                for h in k.prev_solus[-1]:
+                    b.append(h.code) 
+            sol.append(b)
+        permutations_f.append(sol) #permet de récupérer la meilleure solution associée à chaque route
+        couts_f.append(cout)
+    simultaneous = []
+    for i in range(nb_algs):
+        liste = []
+        for j in range(nb_permut):
+            liste.append(couts_f[j][i])
+        simultaneous.append(liste)
+    Streamlit.plot_solutions(simultaneous)

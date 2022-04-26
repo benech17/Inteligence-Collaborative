@@ -12,6 +12,8 @@ def header(str):
     streamlit.header(str)    
 def table(dataframe):
     streamlit.dataframe(dataframe)
+def step_bar(value):
+    streamlit.progress(value)
 
 def plot_solutions(plots):
     fig, ax = matplotlib.pyplot.subplots()

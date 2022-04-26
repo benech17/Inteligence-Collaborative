@@ -1,7 +1,6 @@
 from sklearn.cluster import AgglomerativeClustering
 from mesa.time import RandomActivation
 import pandas
-import random
 import mesa
 
 import matplotlib.pyplot as plt
@@ -60,7 +59,6 @@ class Model(mesa.Model):
         model = model.fit(X)
 
     def assign_clusters_to_vehicles(self):
-        print("hey 2")
         clients = [[client.lat, client.lon] for client in self.agents['clients'].values()]
         clustering = AgglomerativeClustering(n_clusters=10, compute_distances=True)
         results = clustering.fit_predict(clients)
@@ -84,54 +82,7 @@ class Model(mesa.Model):
             v.attribute_algorithm_to_vehicle(self,0.0,0.0,50,0.0,0.0,"taboo")
             v.attribute_algorithm_to_vehicle(self,0.0,0.0,0,10,0.9,"rs")
             self.schedule.add(v)
-    
+
     def step(self):
         self.schedule.step()
     
-    def plot_graphs_agents(self,nb_ite,nb_algs):
-        total = [0]*nb_algs
-        for v in self.agents['vehicles'].values():
-            if len(v.algorithm) != 0:
-                for i in range(nb_algs):
-                    plt.plot(v.algorithm[i].mins)
-                    plt.title("Courbe de résultats de l'algorithme " + type(v.algorithm[i]).__name__)
-                    plt.xlabel("Nombre d'itérations")
-                    plt.ylabel('Coût trouvé')
-                    plt.show()
-                    if len(v.algorithm[i].mins) == 0 :
-                        total[i] += 0
-                    else :
-                        total[i] += v.algorithm[i].mins[-1]
-        return(total)
-    
-    def find_best_sol(self,route_num,nb_permut,nb_ite,nb_algs):
-        l = self.agents['routes'][route_num]
-        cout = 0
-        permutations_f = []
-        couts_f = []
-        for i in range(nb_permut):
-            sol = []
-            a = l.copy()
-            random.shuffle(a)
-            self.agents['vehicles'].clear()
-            self.read_vehicles('Data/3_detail_table_vehicles.csv', w = 0)
-            self.assign_clients_to_vehicles(a)
-            self.assign_heuristics_to_vehicles()
-            for i in range(nb_ite):
-                self.step()
-            cout = self.plot_graphs_agents(nb_ite,nb_algs)
-            for v in self.agents['vehicles'].values():
-                b = []
-                for k in v.algorithm:
-                    for h in k.prev_solus[-1]:
-                        b.append(h.code) 
-                sol.append(b)
-            permutations_f.append(sol) #permet de récupérer la meilleure solution associée à chaque route
-            couts_f.append(cout)
-        simultaneous = []
-        for i in range(nb_algs):
-            liste = []
-            for j in range(nb_permut):
-                liste.append(couts_f[j][i])
-            simultaneous.append(liste)
-        return simultaneous
