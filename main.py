@@ -8,6 +8,7 @@ if __name__ == "__main__":
     # Model reads files and create agents
     model.read_deposits('Data/4_detail_table_depots.csv')
     model.read_clients('Data/2_detail_table_customers.csv')
+<<<<<<< HEAD
     # model.planning = False
     # nb_ite = 50
     # nb_permut = 10
@@ -16,3 +17,10 @@ if __name__ == "__main__":
     # Vizualisation
     Streamlit.introduction()
     Streamlit.map(model)
+=======
+    model.planning = False
+    nb_ite = 50
+    nb_permut = 10
+    model.find_best_sol(0,nb_permut,nb_ite,3)
+    print("Finished!")
+>>>>>>> 07653d47e94ba551f47a41e6246856a01ca7f8fa
