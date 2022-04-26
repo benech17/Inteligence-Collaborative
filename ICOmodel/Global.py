@@ -83,7 +83,7 @@ class Model(mesa.Model):
             v.algorithm = []
             v.attribute_algorithm_to_vehicle(self,0.5,0.2,100,0.0,0.0,"genetic")
             v.attribute_algorithm_to_vehicle(self,0.0,0.0,50,0.0,0.0,"taboo")
-            v.attribute_algorithm_to_vehicle(self,0.0,0.0,0,5,0.9,"rs")
+            v.attribute_algorithm_to_vehicle(self,0.0,0.0,0,10,0.9,"rs")
             self.schedule.add(v)
     
     def step(self):
@@ -133,7 +133,6 @@ class Model(mesa.Model):
                 sol.append(b)
             permutations_f.append(sol) #permet de récupérer la meilleure solution associée à chaque route
             couts_f.append(cout)
-        print(couts_f)
         simultaneous = []
         for i in range(nb_algs):
             liste = []

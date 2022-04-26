@@ -5,7 +5,7 @@ from mesa.datacollection import DataCollector
 
 class RSAgent(mesa.Agent):
     def __init__(self,model,vhl,iter_cycle,refroidissement):
-        super().__init__(model.next_id(), model)
+        super().__init__(model.next_id (), model)
         self.vehicule = vhl
         self.nb_iter =0  #nombre d'itérations
         self.nb_iter_cycle = iter_cycle    #nombre d'itérations par cycle
