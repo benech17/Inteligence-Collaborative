@@ -23,9 +23,5 @@ if __name__ == "__main__":
     Streamlit.text("Let's start by plotting the map with the clustering")
     Streamlit.map(model)
     
-
-    model.planning = False
-    nb_ite = 50
-    nb_permut = 10
-    model.find_best_sol(0,nb_permut,nb_ite)
-    print("Finished!")
+    plots = model.find_best_sol(0,50,10,3)
+    Streamlit.plot_solutions(plots)

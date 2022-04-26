@@ -51,7 +51,6 @@ class RSAgent(mesa.Agent):
                     self.prev_solus.append(self.liste_clients_f)
                     self.mins.append(self.vehicule.f_cout(self.liste_clients_f))
             self.temp *= self.a
-        print("je suis dans le step")
         return(self.liste_clients_f)
 
 

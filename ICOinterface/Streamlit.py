@@ -13,6 +13,14 @@ def header(str):
 def table(dataframe):
     streamlit.dataframe(dataframe)
 
+def plot_solutions(plots):
+    fig, ax = matplotlib.pyplot.subplots()
+    for i in plots:
+        ax.plot(i)
+        # ax.title("Evolution pour chaque algo")
+        # ax.xlabel("Nombre d'itérations")
+        # ax.ylabel('Coût trouvé')
+    streamlit.pyplot(fig)
 
 def map(model):
     colors = ['red', 'blue', 'green', 'purple', 'orange', 'darkred','lightred', 'beige', 'darkblue', 'darkgreen', 'cadetblue', 'darkpurple', 'white', 'pink', 'lightblue', 'lightgreen', 'gray', 'black', 'lightgray']

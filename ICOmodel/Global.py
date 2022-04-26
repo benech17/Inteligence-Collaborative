@@ -12,7 +12,6 @@ class Model(mesa.Model):
     '''Model is the name for the global model controller'''
     def __init__(self, verbose = False):
         super().__init__()
-        self.planning = True
         self.verbose = verbose
         self.agents = {"deposits": {},"vehicles": {}, "clients": {}, "routes": {}}
 
@@ -87,11 +86,7 @@ class Model(mesa.Model):
             self.schedule.add(v)
     
     def step(self):
-        if self.planning:
-            print("Planning!")
-        else:
-            self.schedule.step()
-            print("Delivering!")
+        self.schedule.step()
     
     def plot_graphs_agents(self,nb_ite,nb_algs):
         total = [0]*nb_algs
@@ -139,9 +134,4 @@ class Model(mesa.Model):
             for j in range(nb_permut):
                 liste.append(couts_f[j][i])
             simultaneous.append(liste)
-        for i in simultaneous:
-            plt.plot(i)
-        plt.title("Evolution pour chaque algo")
-        plt.xlabel("Nombre d'itérations")
-        plt.ylabel('Coût trouvé')
-        plt.show()
+        return simultaneous
