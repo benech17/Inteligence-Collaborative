@@ -14,17 +14,17 @@ if __name__ == "__main__":
     # model.assign_clusters_to_vehicles()
     
     # Comment everything here if you don't want streamlit viz!
-    # Streamlit.title('Welcolme to ICOnprend Rien')
-    # Streamlit.text("Created by Andreis, Colin, Mehdi, Yaniv, Paul and James")
-    # Streamlit.header("1. Data")
-    # Streamlit.text("Let's start by reading the data with Pandas")
-    # Streamlit.text("Here are the deposits")
-    # Streamlit.table(deps)
-    # Streamlit.text("Here are the clients")
-    # Streamlit.table(clis)
-    # Streamlit.header("2. Map")
-    # Streamlit.text("Let's start by plotting the map with the clustering")
-    # Streamlit.map(model)
+    Streamlit.title('Welcolme to ICOnprend Rien')
+    Streamlit.text("Created by Andreis, Colin, Mehdi, Yaniv, Paul and James")
+    Streamlit.header("1. Data")
+    Streamlit.text("Let's start by reading the data with Pandas")
+    Streamlit.text("Here are the deposits")
+    Streamlit.table(deps)
+    Streamlit.text("Here are the clients")
+    Streamlit.table(clis)
+    Streamlit.header("2. Map")
+    Streamlit.text("Let's start by plotting the map with the clustering")
+    Streamlit.map(model)
     
     nb_ite = 50
     route_num = 0

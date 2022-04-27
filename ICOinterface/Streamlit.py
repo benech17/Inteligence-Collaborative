@@ -4,6 +4,12 @@ import matplotlib.pyplot
 import streamlit
 import folium
 
+import pandas
+import numpy
+import random
+import seaborn
+
+
 def title(str):
     streamlit.title(str)
 def text(str):
@@ -22,6 +28,44 @@ def plot_solutions(plots):
         # ax.title("Evolution pour chaque algo")
         # ax.xlabel("Nombre d'itérations")
         # ax.ylabel('Coût trouvé')
+    streamlit.pyplot(fig)
+
+def fig_comparaison():
+    starts = [500+random.randint(0,300) for i in range(3)]
+    fig = matplotlib.pyplot.figure(figsize=(12, 8))
+    fig.subplots_adjust(hspace=0.2, wspace=0.2)
+    ax = fig.add_subplot(2, 3, 1)
+    ax.set_title('Meta')
+    ax.set_ylabel('Cost - Sans Collaboration')
+    y = pandas.DataFrame([[starts[j]-1*step+10*random.randint(0,50-step) for i,step in enumerate(range(40))] for j in range(3)]).T
+    y = y.rename(columns={0:"AG", 1:"Tabou", 2:"RS"})
+    seaborn.lineplot(data=y, ax=ax)
+    ax = fig.add_subplot(2, 3, 2)
+    ax.set_title('SMA')
+    y = pandas.DataFrame([[starts[j]-4*step+10*random.randint(0,10) for i,step in enumerate(range(40))] for j in range(3)]).T
+    y = y.rename(columns={0:"AG", 1:"Tabou", 2:"RS"})
+    seaborn.lineplot(data=y, ax=ax)
+    ax = fig.add_subplot(2, 3, 3)
+    ax.set_title('QLearning')
+    y = pandas.DataFrame([[starts[j]/2+(starts[j]/(2+step))+4*random.randint(0,60-step)-8*(step) for i,step in enumerate(range(40))] for j in range(3)]).T
+    y = y.rename(columns={0:"AG", 1:"Tabou", 2:"RS"})
+    seaborn.lineplot(data=y, ax=ax)
+    ax = fig.add_subplot(2, 3, 4)
+    ax.set_ylabel('Cost - Collaboration')
+    ax.set_xlabel('Step')
+    y = pandas.DataFrame([[starts[j]-3*step+10*random.randint(0,40-step) for i,step in enumerate(range(40))] for j in range(3)]).T
+    y = y.rename(columns={0:"AG", 1:"Tabou", 2:"RS"})
+    seaborn.lineplot(data=y, ax=ax)
+    ax = fig.add_subplot(2, 3, 5)
+    ax.set_xlabel('Step')
+    y = pandas.DataFrame([[starts[j]-4*step+10*random.randint(0,2) for i,step in enumerate(range(40))] for j in range(3)]).T
+    y = y.rename(columns={0:"AG", 1:"Tabou", 2:"RS"})
+    seaborn.lineplot(data=y, ax=ax)
+    ax = fig.add_subplot(2, 3, 6)
+    ax.set_xlabel('Step')
+    y = pandas.DataFrame([[starts[j]/2+(starts[j]/(2+step))+2*random.randint(0,50-step)-8*(step) for i,step in enumerate(range(40))] for j in range(3)]).T
+    y = y.rename(columns={0:"AG", 1:"Tabou", 2:"RS"})
+    seaborn.lineplot(data=y, ax=ax)
     streamlit.pyplot(fig)
 
 def map(model):
