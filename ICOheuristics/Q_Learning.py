@@ -54,7 +54,7 @@ class Q_agent(mesa.Agent):
             liste_vehicules[i_selec].attribute_client_to_vehicle(k)
     
     def eps_greedy(self,state):
-        if random.uniform(0, 1) < self.eps: #random action
+        if random.uniform(0, 1) < self.epsilon: #random action
             action = randint(0, 7)
         else: # or greedy action
             action = np.argmax(self.Q,axis = 1)[state]
@@ -113,13 +113,6 @@ class Q_agent(mesa.Agent):
             state_list.append(next_state)
             self.apply_action(next_state) #on met à jour self.sol avec la nouvelle action
             sol_codes = []
-            for v in self.best_sol:
-                b = []
-                for k in v.algorithm:
-                    for h in k.prev_solus[-1]:
-                        b.append(h.code) 
-                sol_codes.append(b)
-            print(sol_codes)
             total_by_alg = self.model.find_best_sol(nb_ite,self.sol,nb_algs)
             print("sorti")
             if self.model.solution_cost(self.sol) < self.model.solution_cost(self.best_sol):

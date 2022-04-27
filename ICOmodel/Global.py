@@ -81,8 +81,7 @@ class Model(mesa.Model):
         for i,client in enumerate(self.agents['clients']):
             self.agents['clients'][client].route_id = results[i]
 
-    def assign_clients_to_vehicles(self,l):
-        liste_vehicules =  list(self.agents['vehicles'].values())
+    def assign_clients_to_vehicles(self,l,liste_vehicules):
         for v in liste_vehicules:
             v.clients = []
             j = 0
@@ -96,17 +95,9 @@ class Model(mesa.Model):
         self.schedule = mesa.time.RandomActivation(self)
         for v in liste_vehicules:
             v.algorithm = []
-            #v.attribute_algorithm_to_vehicle(self,0.5,0.2,100,0.0,0.0,"genetic")
+            v.attribute_algorithm_to_vehicle(self,0.5,0.2,100,0.0,0.0,"genetic")
             v.attribute_algorithm_to_vehicle(self,0.0,0.0,50,0.0,0.0,"taboo")
             v.attribute_algorithm_to_vehicle(self,0.0,0.0,0,10,0.9,"rs")
-            # if len(v.clients) == 0 :
-            #     for i in v.algorithm:
-            #         i.mins.append(0)
-            # if len(v.clients) == 1 :
-            #     for i in v.algorithm:
-            #         i.prev_solus.append(v.clients[0])
-            #         i.mins.append(1)
-            # else :
             self.schedule.add(v)
 
     def find_best_sol(self,nb_ite,liste_vehicules,nb_algs):
@@ -116,13 +107,13 @@ class Model(mesa.Model):
         total_by_alg = [0]*nb_algs
         for v in liste_vehicules:
             v.plot_graph_v(nb_algs,total_by_alg)
-            min_result = v.algorithm[0].mins[-1]
-            min_result_index = 0
-            for i in range(len(v.algorithm)):
-                if v.algorithm[i].mins[-1] < min_result :
-                    min_result = v.algortithm[i].mins[-1]
-                    min_result_index = i
-            if len(v.clients) > 0:
+            if len(v.algorithm) == nb_algs:
+                min_result = v.algorithm[0].mins[-1]
+                min_result_index = 0
+                for i in range(nb_algs):
+                    if v.algorithm[i].mins[-1] < min_result :
+                        min_result = v.algorithm[i].mins[-1]
+                        min_result_index = i
                 v.clients = v.algorithm[min_result_index].prev_solus[-1]
             v.algorithm = []
         return(total_by_alg)

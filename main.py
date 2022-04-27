@@ -28,7 +28,7 @@ if __name__ == "__main__":
     
     nb_ite = 50
     route_num = 0
-    nb_algs = 2
+    nb_algs = 3
     max_iter_no_improvement = 10
     max_nb_states = 10
     epsilon = 0.5
@@ -38,9 +38,18 @@ if __name__ == "__main__":
     
     #on créé la solution initiale
     l = model.agents['routes'][route_num]
+    
     model.read_vehicles('Data/3_detail_table_vehicles.csv', w = 0)
     sol_init = list(model.agents['vehicles_dupl'].values())
-    sol_base = model.assign_clients_to_vehicles(l)
+    sol_base = model.assign_clients_to_vehicles(l,list(model.agents['vehicles'].values()))
+    
+    sol_codes = []
+    for v in sol_base:
+        b = []
+        for k in v.clients:
+            b.append(k.code) 
+        sol_codes.append(b)
+    print(sol_codes)
     
     learner = Q_Learning.Q_agent(model,sol_base,sol_init,max_iter_no_improvement,max_nb_states,epsilon,decay_rate,learn_rate,disc_rate)
     solu_f,liste_couts,liste_couts_par_algo = learner.Q_learning(nb_ite,nb_algs)
