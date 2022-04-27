@@ -24,8 +24,8 @@ if __name__ == "__main__":
     Streamlit.text("Let's start by plotting the map with the clustering")
     Streamlit.map(model)
     
-    nb_ite = 50
-    nb_permut = 10
+    nb_ite = 70
+    nb_permut = 30
     route_num = 0
     nb_algs = 3
     l = model.agents['routes'][route_num]
@@ -63,7 +63,7 @@ if __name__ == "__main__":
                 for h in k.prev_solus[-1]:
                     b.append(h.code) 
             sol.append(b)
-        permutations_f.append(sol) #permet de récupérer la meilleure solution associée à chaque route
+        permutations_f.append(sol)
         couts_f.append(cout)
     simultaneous = []
     for i in range(nb_algs):
