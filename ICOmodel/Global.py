@@ -59,10 +59,26 @@ class Model(mesa.Model):
         X = clients[['CUSTOMER_LATITUDE','CUSTOMER_LONGITUDE']]
         model = model.fit(X)
 
-    def assign_clusters_to_vehicles(self):
+    def assign_clusters_to_vehicles(self,n_clusters):
+        liste_vehicules =  list(self.agents['vehicles'].values())
         clients = [[client.lat, client.lon] for client in self.agents['clients'].values()]
-        clustering = AgglomerativeClustering(n_clusters=10, compute_distances=True)
+        clustering = AgglomerativeClustering(n_clusters, compute_distances=True)
         results = clustering.fit_predict(clients)
+        
+        grouped_clients = [[]]*n_clusters
+        cluster_costs_weight = [0]*n_clusters
+        cluster_costs_volume = [0]*n_clusters
+        
+        for i in range(len(results)):
+            c = list(self.agents['clients'].values())[i]
+            grouped_clients[results[i]].append(c)
+            cluster_costs_weight[results[i]] += c.total_weight_kg
+            cluster_costs_volume[results[i]] += c.total_volume_m3
+        
+        
+        
+        print(results,grouped_clients,cluster_costs_weight,cluster_costs_volume)    
+        
         for i,client in enumerate(self.agents['clients']):
             self.agents['clients'][client].route_id = results[i]
 
