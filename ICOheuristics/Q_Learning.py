@@ -105,145 +105,88 @@ if __name__ == '__main__':
         print(s, Q[s])
 
 
+
 class Q_agent(mesa.Agent):
     def __init__(self, model, vhl, client):
-        super().__init__(model.next_id(), model)
+        super().__init__(model.next_id(), model,vhl)
         self.eps =
         self.state = 
-        self.actions = [eps_greedy(self.state),intra_route_swap(self),inter_route_swap(self,vhl2),intra_route_shift(self),inter_route_shift(self,vhl2),two_intra_route_swap(self),two_intra_route_shift(self),remove_road(self,"smallest",liste_vehicules),remove_road(self,"random",liste_vehicules)]
-        self.next_state = 0
+        self.actions = vhl.liste_fonctions
+        self.next_state = vhl.clients
         self.lr_rate =0
         self.r = 0
         self.dis_rate =0
+        self.liste_vehicules = vhl.liste_vehicules
+        self.liste_fonctions =
+        self.grid = np.zeros((8,8),float)
+        
         
         
     def eps_greedy(self):
         if random.uniform(0, 1) < eps:
-            action = randint(1, 9)
+            action = self.liste_fonctions[randint(0, 7)]
         else: # Or greedy action
             action = np.argmax(Q[st])
         return action
         
-    
-    def choose_action(self,type_function,Q_size):
         
-        if type_function ==1:
-            self.next_state = 0
+    
+    def choose_action(self,type_function):
+        
+        if type_function ==1: # fcts avec 1 arguments
+            self.next_state = self.liste_fonctions[eps_greedy(self.liste_vehicules)](self.liste_vehicules)
         else:
-            if type_function ==2:
+            if type_function ==2: # fcts avec 2 arguments
                 
-                self.next_state = randint(1,8)
+                self.next_state =self.liste_fonctions[eps_greedy(self.liste_vehicules)](self.liste_vehicules,vhl)
+            
+            
             
     def Q_learning(self):
-        Q = np.ones((8,8),float)
+        Q = np.ones((8,8),float) * 1
         
         for k in range(0,10):
-            self.state = 
+            self.state = k
+            for j in range(0,10):
+                action = eps_greedy(self.liste_vehicules)
+                if action in #[numéro de fcts ac un argument]
+                    self.liste_fonctions[action](self.liste_vehicules)
+                else: self.liste_fonctions[action](self.liste_vehicules,vhl)
+                
+                Q[st,at] = #  moyenne coûts - côuts
+                r = self.grid[k][action]
+                self.next_state =
+                Q[st,at] += self.lr_rate*(r+self.dis_rate*Q[stp1][atp1] - Q[st][at])
+                self.state = self.next_state
+                
+    def reset(self):
+        self.grid = np.zeros((8,8),float)
+    
+        return (self.grid)
+    
+    
+    def is_finished(self):
+    
+        return self.grid[,] ==
+    
+    
+    def reward(self):
+        
             
         
-    def step(self):
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-    def intra_route_swap(self):
-        a = randint(0,len(self.clients))
-        b = randint(0,len(self.clients))
-        c = self.clients[a]
-        d = self.clients[b]
-        self.clients[a] = d
-        self.clients[b] = c
-        
-    def inter_route_swap(self,vhl2):
-        
-        a = randint(0,len(self.clients))
-        b = randint(0,len(vhl2.clients))
-        c = self.clients[a]
-        d = vhl2.clients[b]
-        # voir si c'est compatible
-        if (vhl2.vehicle_weight + c.total_weight_kg - d.total_weight_kg > vhl2.vehicle_total_weight) or (self.vehicle_weight + d.total_weight_kg - c.total_weight_kg > self.vehicle_total_weight) or (vhl2.vehicle_volume + c.total_volume_m3 - d.total_volume_m3 > vhl2.vehicle_total_volume) or (self.vehicle_volume - c.total_volume_m3 + d.total_volume_m3 > self.vehicle_total_volume) or (d in self.clients) or (c in vhl2.clients):
-            break
-        else:
-            self.clients[a] = d
-            vhl2.clients[b] = c
-        
+    def step(self, action):
     
-    
-    def intra_route_shift(self):
-        
-        a = randint(0,len(self.clients))
-        b = randint(0,len(self.clients))
-        c = self.clients[a]
-        d = self.clients[b]
-        L = self.clients
-        
-        if a ==b:
-            while (a==b):
-                b = randint(0,len(self.clients))
-        self.clients[b] = c
-        if b > a:
-            for k in range(b-1,a-1,-1):
-                self.clients[k] = L[k+1]
-        else: 
-            for k in range(b+1,a+1):
-                self.clients[k] = L[k-1]
-            
-        
-        
-    def inter_route_shift(self,vhl2):
-        
-        b = self.clients[-1]
-        
-        if (vhl2.vehicle_weight + b.total_weight_kg > vhl2.vehicle_total_weight) or (vhl2.vehicle_volume + b.total_volume_m3 > vhl2.vehicle_total_volume) or (b in vhl2.clients):
-            break
-        else:
-            vhl2.clients.append(b)
-            self.clients.pop([-1])
-        
-    
-    def two_intra_route_swap(self):
-        a = randint(0,len(self.clients)-1)
-        b = randint(0,len(self.clients)-1)
-        
-        c1,c2 = self.clients[a],self.clients[a+1]
-        d1,d2 = self.clients[b],self.clients[b+1]
-        
-        self.clients[a],self.clients[a+1] = d1,d2
-        self.clients[b],self.clients[b+1] = c1,c2
-        
-    def two_intra_route_shift(self):
-        
-        
-        a = randint(0,len(self.clients)-1)
-        b = randint(0,len(self.clients)-1)
-        c1,c2 = self.clients[a],self.clients[a+1]
-        d1,d2 = self.clients[b],self.clients[b+1]
-        L = self.clients
-        
-        if a == b:
-            while (a==b):
-                b = randint(0,len(self.clients))
-                
-        self.clients[b],self.clients[b+1] = c1,c2
-        
-        if b > a:
-            for k in range(b-1,a,-1):
-                self.clients[k-1],self.clients[k] = L[k+1],L[k+2]
-                
-        else: 
-            for k in range(b,a-1):
-                self.clients[k+2],self.clients[k+3] = L[k],L[k+1]
+        return(
         
         
         
         
-    def remove_road(self,typea,liste_vehicules):
+        
+        
+        
+        
+        
+
 
         
 
