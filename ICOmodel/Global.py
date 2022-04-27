@@ -7,6 +7,7 @@ import random
 import matplotlib.pyplot as plt
 
 from ICOagents import Client, Deposit, Vehicle
+from ICOmodel import Cluster
 
 class Model(mesa.Model):
     '''Model is the name for the global model controller'''
@@ -48,37 +49,42 @@ class Model(mesa.Model):
             if not route_id in self.agents['routes']:
                 self.agents['routes'][route_id] = []
             self.agents['routes'][route_id].append(self.agents['clients'][id])
-        # Transforms routes in list
         self.agents['routes'] = list(self.agents['routes'].values())
         if self.verbose:
             print(df.shape,len(self.agents['clients']),"Clients.",len(self.agents['routes']),"Routes")
         return df
 
-    def make_clusters(self):
-        model = AgglomerativeClustering(n_clusters=10, compute_distances=True)
-        X = clients[['CUSTOMER_LATITUDE','CUSTOMER_LONGITUDE']]
-        model = model.fit(X)
-
-    def assign_clusters_to_vehicles(self,n_clusters):
-        liste_vehicules =  list(self.agents['vehicles'].values())
+    def assign_clusters_to_vehicles(self):
         clients = [[client.lat, client.lon] for client in self.agents['clients'].values()]
-        clustering = AgglomerativeClustering(n_clusters, compute_distances=True)
-        results = clustering.fit_predict(clients)
-        
-        grouped_clients = [[]]*n_clusters
-        cluster_costs_weight = [0]*n_clusters
-        cluster_costs_volume = [0]*n_clusters
-        
-        for i in range(len(results)):
-            c = list(self.agents['clients'].values())[i]
-            grouped_clients[results[i]].append(c)
-            cluster_costs_weight[results[i]] += c.total_weight_kg
-            cluster_costs_volume[results[i]] += c.total_volume_m3
-        
-        print(results,grouped_clients,cluster_costs_weight,cluster_costs_volume)    
-        
-        for i,client in enumerate(self.agents['clients']):
-            self.agents['clients'][client].route_id = results[i]
+        n_clusters = len(self.agents['vehicles'])
+        # Sorted in increasing order
+        vehicles_ordered_weight = sorted(self.agents['vehicles'].items(), key = lambda v: v[1].vehicle_total_weight)
+        vehicles_ordered_volume = sorted(self.agents['vehicles'].items(), key = lambda v: v[1].vehicle_total_volume)
+        while True:
+            clustering = AgglomerativeClustering(n_clusters=n_clusters, compute_distances=True)
+            labels = clustering.fit_predict(clients)
+            clusters_weight = {label: 0 for label in labels}
+            clusters_volume = {label: 0 for label in labels}
+            for i,client in enumerate(self.agents['clients'].values()):
+                clusters_weight[labels[i]] += client.total_weight_kg
+                clusters_volume[labels[i]] += client.total_volume_m3
+                # Compare current clusters to vehicles max.
+                max_weight = vehicles_ordered_weight[-1][1].vehicle_total_weight
+                max_volume = vehicles_ordered_volume[-1][1].vehicle_total_volume
+                if clusters_weight[labels[i]] > max_weight or clusters_volume[labels[i]] > max_volume:
+                    print(clusters_weight[labels[i]],max_weight)
+                    n_clusters += 1
+                    break
+                # clusters[labels[i]].append(self.agents['clients'][client])
+                self.agents['clients'][client].route_id = results[i]
+
+            if(n_clusters > 20):
+                break
+        clusters_weight = sorted(clusters_weight.items(), key = lambda c: c[1])
+        clusters_volume = sorted(clusters_volume.items(), key = lambda c: c[1])
+        print(clusters_weight)
+        print(clusters_volume)
+        clusters = {label: [] for label in labels }
 
     def assign_clients_to_vehicles(self,l):
         liste_vehicules =  list(self.agents['vehicles'].values())

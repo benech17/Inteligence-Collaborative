@@ -11,8 +11,10 @@ if __name__ == "__main__":
     # Model reads files and create agents
     deps = model.read_deposits('Data/4_detail_table_depots.csv')
     clis = model.read_clients('Data/2_detail_table_customers.csv')
-    # model.assign_clusters_to_vehicles()
     
+    
+    
+
     # Comment everything here if you don't want streamlit viz!
     # Streamlit.title('Welcolme to ICOnprend Rien')
     # Streamlit.text("Created by Andreis, Colin, Mehdi, Yaniv, Paul and James")
