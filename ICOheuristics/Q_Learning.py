@@ -112,7 +112,16 @@ class Q_agent(mesa.Agent):
             next_state = self.choose_action(0,2)
             state_list.append(next_state)
             self.apply_action(next_state) #on met à jour self.sol avec la nouvelle action
+            sol_codes = []
+            for v in self.best_sol:
+                b = []
+                for k in v.algorithm:
+                    for h in k.prev_solus[-1]:
+                        b.append(h.code) 
+                sol_codes.append(b)
+            print(sol_codes)
             total_by_alg = self.model.find_best_sol(nb_ite,self.sol,nb_algs)
+            print("sorti")
             if self.model.solution_cost(self.sol) < self.model.solution_cost(self.best_sol):
                 reward = self.model.solution_cost(self.best_sol) - self.model.solution_cost(self.sol)
                 self.best_sol = self.sol

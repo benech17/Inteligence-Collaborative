@@ -11,10 +11,8 @@ if __name__ == "__main__":
     # Model reads files and create agents
     deps = model.read_deposits('Data/4_detail_table_depots.csv')
     clis = model.read_clients('Data/2_detail_table_customers.csv')
+    # model.assign_clusters_to_vehicles()
     
-    
-    
-
     # Comment everything here if you don't want streamlit viz!
     # Streamlit.title('Welcolme to ICOnprend Rien')
     # Streamlit.text("Created by Andreis, Colin, Mehdi, Yaniv, Paul and James")
@@ -30,7 +28,7 @@ if __name__ == "__main__":
     
     nb_ite = 50
     route_num = 0
-    nb_algs = 3
+    nb_algs = 2
     max_iter_no_improvement = 10
     max_nb_states = 10
     epsilon = 0.5
@@ -41,12 +39,8 @@ if __name__ == "__main__":
     #on créé la solution initiale
     l = model.agents['routes'][route_num]
     model.read_vehicles('Data/3_detail_table_vehicles.csv', w = 0)
+    sol_init = list(model.agents['vehicles_dupl'].values())
     sol_base = model.assign_clients_to_vehicles(l)
-    
-    #on créé une copie indépendante des véhicules pour ne pas modifier la première solution
-    model.agents["vehicles"].clear()
-    model.read_vehicles('Data/3_detail_table_vehicles.csv', w = 0)
-    sol_init = list(model.agents['vehicles'].values())
     
     learner = Q_Learning.Q_agent(model,sol_base,sol_init,max_iter_no_improvement,max_nb_states,epsilon,decay_rate,learn_rate,disc_rate)
     solu_f,liste_couts,liste_couts_par_algo = learner.Q_learning(nb_ite,nb_algs)
