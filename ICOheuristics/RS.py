@@ -13,7 +13,7 @@ class RSAgent(mesa.Agent):
         self.nv_cycle = True   #s'agit-il d'un nouveau cycle ou non
         self.temp = 100   #température
         self.prev_solus = [self.vehicule.clients.copy()]
-        self.mins = []
+        self.mins = [self.vehicule.f_cout(self.vehicule.clients)]
         self.liste_clients_f = self.prev_solus[-1].copy()
         self.a = refroidissement
         #self.dc = DataCollector({"solution": lambda m: self.f_main() })
@@ -51,7 +51,6 @@ class RSAgent(mesa.Agent):
                     self.prev_solus.append(self.liste_clients_f)
                     self.mins.append(self.vehicule.f_cout(self.liste_clients_f))
             self.temp *= self.a
-        print("rs")
         return(self.liste_clients_f)
 
 

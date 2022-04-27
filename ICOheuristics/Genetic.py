@@ -16,7 +16,7 @@ class GeneticAgent(mesa.Agent):
         self.popu = popu_init
         self.cout = cout_init
         self.s = 0
-        self.mins = []
+        self.mins = [min(self.cout)]
         self.prev_solus = []
         #self.dc = DataCollector({"solution": lambda m: self.f_main() })
 
@@ -25,8 +25,8 @@ class GeneticAgent(mesa.Agent):
         n=len(result)
         i=rd.randint(0,n-1)
         j=rd.randint(0,n-1)
-        while(i==j):
-            j=rd.randint(0,n-1)
+        # while(i==j):
+        #     j=rd.randint(0,n-1)
         x=result[i]
         result[i]=result[j]
         result[j]=x
@@ -101,7 +101,7 @@ class GeneticAgent(mesa.Agent):
         #construction de S(t), liste de solutions de classe Liste_Clients
         listeProba = self.proba(forceTriee, prePopTriee)
         S1 = self.constructS(listeProba, self.popu_size)
-          
+
         #construction de S(t+1), liste de solutions de classe Liste_Clients
         S2 = []
         for i in range(0,len(S1),2) :
@@ -112,13 +112,14 @@ class GeneticAgent(mesa.Agent):
             else :
                 S2.append(S1[i])
                 S2.append(S1[i+1])
-          
+
         #construction de P(t+1)
         self.popu = []
         self.cout = []
         for i in S2 :
             if rd.random() < self.Pmut :
                 a = self.permutation_list(i)
+                
                 self.popu.append(a)
                 self.cout.append(self.vehicule.f_cout(a))
             else :
@@ -127,7 +128,7 @@ class GeneticAgent(mesa.Agent):
         
         if self.cout[0] > self.vehicule.f_cout(liste_clients_f):
             self.popu[0] = liste_clients_f
-        print("gen")
+            self.cout[0] = self.vehicule.f_cout(liste_clients_f)
         self.mins.append(cout_f)
         self.prev_solus.append(liste_clients_f)
         return(liste_clients_f)

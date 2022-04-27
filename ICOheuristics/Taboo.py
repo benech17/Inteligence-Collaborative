@@ -11,7 +11,7 @@ class TabouAgent(mesa.Agent):
         self.popu_size = taille
         self.init_popu_size = taille
         self.count = 0
-        self.mins = []
+        self.mins = [self.vehicule.f_cout(self.vehicule.clients)]
         self.prev_solus = [self.vehicule.clients.copy()]
         self.taboo = []
          
@@ -53,7 +53,6 @@ class TabouAgent(mesa.Agent):
         else:
             self.count += 1
         self.taboo.append(cle)
-        print("taboo")
         self.mins.append(self.vehicule.f_cout(liste_clients_f))
         self.prev_solus.append(liste_clients_f)
         return(liste_clients_f)

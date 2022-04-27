@@ -56,18 +56,20 @@ class Agent(mesa.Agent):
         return(False)
 
     def attribute_algorithm_to_vehicle(self, model, pcross, pmut, taille_pop, iter_cycle, refroidissement, typea):
-        if len(self.clients) == 0 and len(self.clients) == 1 :
+        if len(self.clients) == 0 or len(self.clients) == 1 :
             print("Unique client, ou pas de clients assignés")
-        elif typea == "genetic" :
-            popu_init,cout_init = self.generateur(taille_pop)
-            a = GeneticAgent(model, self, pcross, pmut, taille_pop, popu_init, cout_init)
-            self.algorithm.append(a)
-        elif typea == "rs" :
-            a = RSAgent(model, self, iter_cycle, refroidissement)
-            self.algorithm.append(a)
-        elif typea == "taboo" :
-            a = TabouAgent(model, self, taille_pop)
-            self.algorithm.append(a)
+        else:
+            if typea == "genetic" :
+                popu_init,cout_init = self.generateur(taille_pop)
+                #print(cout_init)
+                a = GeneticAgent(model, self, pcross, pmut, taille_pop, popu_init, cout_init)
+                self.algorithm.append(a)
+            elif typea == "rs" :
+                a = RSAgent(model, self, iter_cycle, refroidissement)
+                self.algorithm.append(a)
+            elif typea == "taboo" :
+                a = TabouAgent(model, self, taille_pop)
+                self.algorithm.append(a)
 
     def intra_route_swap(self):
         if len(self.clients) != 0 and len(self.clients) != 1:
@@ -159,10 +161,15 @@ class Agent(mesa.Agent):
                 plt.xlabel("Nombre d'itérations")
                 plt.ylabel('Coût trouvé')
                 plt.show()
-                if len(self.algorithm[i].mins) == 0 :
-                    total_by_alg[i] += 0
-                else :
-                    total_by_alg[i] += self.algorithm[i].mins[-1]
+        else:
+            liste = [len(self.clients)]*10
+            plt.plot(liste)
+            plt.title("Courbe de résultats pour client vide")
+            plt.xlabel("Nombre d'itérations (arbitraire)")
+            plt.ylabel('Coût trouvé')
+            plt.show()
+            for i in range(nb_algs):
+                total_by_alg[i] += len(self.clients)
 
     def step(self):
         for i in self.algorithm :
