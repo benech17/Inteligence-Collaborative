@@ -47,10 +47,11 @@ class RSAgent(mesa.Agent):
                     if q < prob :
                         self.liste_clients_f = solu_voisine
                         self.nv_cycle=True
-                if self.vehicule.f_cout(self.liste_clients_f) < self.vehicule.f_cout(self.prev_solus[-1]) :
+                if self.vehicule.f_cout(self.liste_clients_f) <= self.vehicule.f_cout(self.prev_solus[-1]) :
                     self.prev_solus.append(self.liste_clients_f)
                     self.mins.append(self.vehicule.f_cout(self.liste_clients_f))
             self.temp *= self.a
+        print("rs")
         return(self.liste_clients_f)
 
 

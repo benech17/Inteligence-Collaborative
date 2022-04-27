@@ -24,6 +24,12 @@ def plot_solutions(plots):
         # ax.ylabel('Coût trouvé')
     streamlit.pyplot(fig)
 
+# plt.plot(v.algorithm[i].mins)
+# plt.title("Courbe de résultats de l'algorithme " + type(v.algorithm[i]).__name__)
+# plt.xlabel("Nombre d'itérations")
+# plt.ylabel('Coût trouvé')
+# plt.show()
+
 # def plot_dendrogram(model, **kwargs):
 #     # Create linkage matrix and then plot the dendrogram
 
