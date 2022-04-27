@@ -2,13 +2,13 @@ import random as rd
 from ICOheuristics.Genetic import GeneticAgent
 from ICOheuristics.Taboo import TabouAgent
 from ICOheuristics.RS import RSAgent
+import matplotlib.pyplot as plt
 import mesa
     
 class Agent(mesa.Agent):
     '''Vehicle Agent'''
     def __init__(self, model, series, w):
         super().__init__(model.next_id(), model)
-        self.id = model.current_id
         self.code = series['VEHICLE_CODE']
         self.vehicle_total_weight = series['VEHICLE_TOTAL_WEIGHT_KG']
         self.vehicle_total_volume = series['VEHICLE_TOTAL_VOLUME_M3']
@@ -150,6 +150,19 @@ class Agent(mesa.Agent):
         
         else :
             print("Non réalisé")
+    
+    def plot_graph_v(self,nb_algs,total_by_alg):
+        if len(self.algorithm) != 0:
+            for i in range(nb_algs):
+                plt.plot(self.algorithm[i].mins)
+                plt.title("Courbe de résultats de l'algorithme " + type(self.algorithm[i]).__name__)
+                plt.xlabel("Nombre d'itérations")
+                plt.ylabel('Coût trouvé')
+                plt.show()
+                if len(self.algorithm[i].mins) == 0 :
+                    total_by_alg[i] += 0
+                else :
+                    total_by_alg[i] += self.algorithm[i].mins[-1]
 
     def step(self):
         for i in self.algorithm :

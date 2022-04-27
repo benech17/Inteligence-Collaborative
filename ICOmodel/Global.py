@@ -75,8 +75,6 @@ class Model(mesa.Model):
             cluster_costs_weight[results[i]] += c.total_weight_kg
             cluster_costs_volume[results[i]] += c.total_volume_m3
         
-        
-        
         print(results,grouped_clients,cluster_costs_weight,cluster_costs_volume)    
         
         for i,client in enumerate(self.agents['clients']):
@@ -91,50 +89,48 @@ class Model(mesa.Model):
                 v.attribute_client_to_vehicle(l[j])
                 l.pop(j)
                 j += 1
+        return(liste_vehicules)
     
-    def assign_heuristics_to_vehicles(self):
+    def assign_heuristics_to_vehicles(self,liste_vehicules):
         self.schedule = mesa.time.RandomActivation(self)
-        for v in self.agents['vehicles'].values():
+        for v in liste_vehicules:
             v.algorithm = []
             v.attribute_algorithm_to_vehicle(self,0.5,0.2,100,0.0,0.0,"genetic")
             v.attribute_algorithm_to_vehicle(self,0.0,0.0,50,0.0,0.0,"taboo")
             v.attribute_algorithm_to_vehicle(self,0.0,0.0,0,10,0.9,"rs")
+            # if len(v.clients) == 0 :
+            #     for i in v.algorithm:
+            #         i.mins.append(0)
+            # if len(v.clients) == 1 :
+            #     for i in v.algorithm:
+            #         i.prev_solus.append(v.clients[0])
+            #         i.mins.append(1)
+            # else :
             self.schedule.add(v)
 
-    def remove_road(self,typea,liste_vehicules):
-        nb_clients = []
-        i_selec = 0
-        
+    def find_best_sol(self,nb_ite,liste_vehicules,nb_algs):
+        self.assign_heuristics_to_vehicles(liste_vehicules)
+        for i in range(nb_ite):
+            self.step()
+        total_by_alg = [0]*nb_algs
         for v in liste_vehicules:
-            nb_clients.append(len(v.clients))
-        
-        if typea == "smallest":
-            min_clients = nb_clients[0]
-            for i in range(len(liste_vehicules)):
-                if min_clients > nb_clients[i] and nb_clients[i] != 0:
-                    min_clients = nb_clients[i]
-                    i_selec = i
-        elif typea == "random":
-            i_selec = random.randint(0,len(liste_vehicules)-1)
-            if nb_clients[i_selec] == 0:
-                while nb_clients[i_selec] == 0:
-                    i_selec = random.randint(0,len(liste_vehicules)-1)
-        
-        redistrib = liste_vehicules[i_selec].clients.copy()
-        liste_vehicules[i_selec].clients = []
-        liste_vehicules[i_selec].vehicle_weight = 0
-        liste_vehicules[i_selec].vehicle_volume = 0
-        nb_clients[i_selec] = 0
-        
-        for i in range(len(liste_vehicules)):
-            if nb_clients[i] != 0:
-                for j in range(len(redistrib)):
-                    val = v.attribute_client_to_vehicle(redistrib[j])
-                    if val == True:
-                        redistrib[j] = 0
-                        
-        for k in redistrib:
-            liste_vehicules[i_selec].attribute_client_to_vehicle(k)
+            v.plot_graph_v(nb_algs,total_by_alg)
+            min_result = v.algorithm[0].mins[-1]
+            min_result_index = 0
+            for i in range(len(v.algorithm)):
+                if v.algorithm[i].mins[-1] < min_result :
+                    min_result = v.algortithm[i].mins[-1]
+                    min_result_index = i
+            if len(v.clients) > 0:
+                v.clients = v.algorithm[min_result_index].prev_solus[-1]
+            v.algorithm = []
+        return(total_by_alg)
+
+    def solution_cost(self,liste_vehicules):
+        total_sol = 0
+        for v in liste_vehicules:
+            total_sol += v.f_cout(v.clients)
+        return(total_sol)
 
     def step(self):
         self.schedule.step()

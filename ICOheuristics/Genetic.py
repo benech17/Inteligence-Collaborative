@@ -91,14 +91,13 @@ class GeneticAgent(mesa.Agent):
         k = len(listeProba)
         S = []
         for i in range(0, taille):
-            S.append(listeProba[np.random.randint(0, k-1)]) 
+            S.append(listeProba[rd.randint(0, k-1)]) 
         return(S)
 
     def step(self):
         forceTriee, prePopTriee = self.triInsertion(self.cout,self.popu)
         liste_clients_f = prePopTriee[0]
         cout_f = forceTriee[0]
-
         #construction de S(t), liste de solutions de classe Liste_Clients
         listeProba = self.proba(forceTriee, prePopTriee)
         S1 = self.constructS(listeProba, self.popu_size)
