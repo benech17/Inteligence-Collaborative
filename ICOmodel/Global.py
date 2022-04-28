@@ -60,12 +60,13 @@ class Model(mesa.Model):
         X = clients[['CUSTOMER_LATITUDE','CUSTOMER_LONGITUDE']]
         model = model.fit(X)
 
-    def assign_clusters_to_vehicles(self,n_clusters):
-        liste_vehicules =  list(self.agents['vehicles'].values())
+    def assign_clusters_to_vehicles(self):
         clients = [[client.lat, client.lon] for client in self.agents['clients'].values()]
-        clustering = AgglomerativeClustering(len(liste_vehicules), compute_distances=True)
+        clustering = AgglomerativeClustering(13, compute_distances=True)
+        results = clustering.fit_predict(clients)
         for i,client in enumerate(self.agents['clients']):
             self.agents['clients'][client].route_id = results[i]
+        return clustering
         # results = clustering.fit_predict(clients)
         
         # grouped_clients = [[]]*n_clusters

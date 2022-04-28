@@ -1,4 +1,4 @@
-# from ICOinterface import Streamlit
+from ICOinterface import Streamlit
 from ICOmodel import Global
 from ICOheuristics import Q_Learning
 import random
@@ -11,7 +11,7 @@ if __name__ == "__main__":
     # Model reads files and create agents
     deps = model.read_deposits('Data/4_detail_table_depots.csv')
     clis = model.read_clients('Data/2_detail_table_customers.csv')
-    # model.assign_clusters_to_vehicles()
+    
     
     # Comment everything here if you don't want streamlit viz!
     Streamlit.title('Welcolme to ICOnprend Rien')
@@ -24,61 +24,69 @@ if __name__ == "__main__":
     Streamlit.table(clis)
     Streamlit.header("2. Map")
     Streamlit.text("Let's start by plotting the map with the clustering")
+    Streamlit.plot_clustering(model.assign_clusters_to_vehicles())
     Streamlit.map(model)
     
     nb_ite = 50
-    route_num = 0
-    nb_algs = 3
-    max_iter_no_improvement = 10
-    max_nb_states = 10
-    epsilon = 0.5
-    decay_rate = 0.9
-    learn_rate = 0.1
-    disc_rate = 0.9
+    # route_num = 0
+    # nb_algs = 3
+    # max_iter_no_improvement = 10
+    # max_nb_states = 10
+    # epsilon = 0.5
+    # decay_rate = 0.9
+    # learn_rate = 0.1
+    # disc_rate = 0.9
     
-    #on créé la solution initiale
-    l = model.agents['routes'][route_num]
+    # #on créé la solution initiale
+    # l = model.agents['routes'][route_num]
     
-    model.read_vehicles('Data/3_detail_table_vehicles.csv', w = 0)
-    sol_init = list(model.agents['vehicles_dupl'].values())
-    sol_base = model.assign_clients_to_vehicles(l,list(model.agents['vehicles'].values()))
+    # model.read_vehicles('Data/3_detail_table_vehicles.csv', w = 0)
+    # sol_init = list(model.agents['vehicles_dupl'].values())
+    # sol_base = model.assign_clients_to_vehicles(l,list(model.agents['vehicles'].values()))
     
-    sol_codes = []
-    for v in sol_base:
-        b = []
-        for k in v.clients:
-            b.append(k.code) 
-        sol_codes.append(b)
-    print(sol_codes)
+    # sol_codes = []
+    # for v in sol_base:
+    #     b = []
+    #     for k in v.clients:
+    #         b.append(k.code) 
+    #     sol_codes.append(b)
+    # print(sol_codes)
     
-    learner = Q_Learning.Q_agent(model,sol_base,sol_init,max_iter_no_improvement,max_nb_states,epsilon,decay_rate,learn_rate,disc_rate)
-    solu_f,liste_couts,liste_couts_par_algo = learner.Q_learning(nb_ite,nb_algs)
+    # learner = Q_Learning.Q_agent(model,sol_base,sol_init,max_iter_no_improvement,max_nb_states,epsilon,decay_rate,learn_rate,disc_rate)
+    # solu_f,liste_couts,liste_couts_par_algo = learner.Q_learning(nb_ite,nb_algs)
     
-    sol_codes = []
-    for v in solu_f:
-        b = []
-        for k in v.algorithm:
-            for h in k.prev_solus[-1]:
-                b.append(h.code) 
-        sol_codes.append(b)
-    print(sol_codes)
+    # sol_codes = []
+    # for v in solu_f:
+    #     b = []
+    #     for k in v.algorithm:
+    #         for h in k.prev_solus[-1]:
+    #             b.append(h.code) 
+    #     sol_codes.append(b)
+    # print(sol_codes)
     
-    simultaneous = []
-    for i in range(nb_algs):
-        liste = []
-        for j in liste_couts_par_algo:
-            liste.append(j[i])
-        simultaneous.append(liste)
+    # simultaneous = []
+    # for i in range(nb_algs):
+    #     liste = []
+    #     for j in liste_couts_par_algo:
+    #         liste.append(j[i])
+    #     simultaneous.append(liste)
     
-    plt.plot(liste_couts)
-    plt.title("Courbe de résultats de l'algorithme ")
-    plt.xlabel("Nombre d'itérations")
-    plt.ylabel('Coût trouvé')
-    plt.show()
+    # plt.plot(liste_couts)
+    # plt.title("Courbe de résultats de l'algorithme ")
+    # plt.xlabel("Nombre d'itérations")
+    # plt.ylabel('Coût trouvé')
+    # plt.show()
     
-    for i in range(nb_algs):
-        plt.plot(simultaneous[i])
-    plt.title("Courbe de résultats par algorithme ")
-    plt.xlabel("Nombre d'itérations")
-    plt.ylabel('Coût trouvé')
-    plt.show()
+    # for i in range(nb_algs):
+    #     plt.plot(simultaneous[i])
+    # plt.title("Courbe de résultats par algorithme ")
+    # plt.xlabel("Nombre d'itérations")
+    # plt.ylabel('Coût trouvé')
+    # plt.show()
+    bar = Streamlit.bar(nb_ite)
+    for i in range(nb_ite):
+        bar.step(i)
+
+    Streamlit.header("3. Data")
+    Streamlit.top()
+    Streamlit.graph([],[])
