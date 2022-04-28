@@ -20,8 +20,9 @@ def table(dataframe):
     streamlit.dataframe(dataframe)
 
 class bar:
-    def __init__(self,total):
+    def __init__(self):
         self.b = streamlit.progress(0)
+    def config(self,total):
         self.total = total-1
     def step(self,value):
         self.b.progress(value/self.total)
@@ -116,8 +117,17 @@ def map(model):
         folium.Marker([client.lat, client.lon], icon=folium.Icon(color=client_routes_id[client.route_id])).add_to(m)
     folium_static(m)
 
-def graph(clients,deposit):
-    fig = matplotlib.pyplot.figure(figsize=(24, 16))
-    G = networkx.petersen_graph()
-    networkx.draw(G, with_labels=True, font_weight='bold')
+def plot(fig):
     streamlit.pyplot(fig)
+
+def network(model):
+    vehicles = list(model.agents['vehicles'].values())
+    for vehicle in vehicles:
+        fig = matplotlib.pyplot.figure(figsize=(24, 16))
+        G = networkx.Graph()
+        for i,client in enumerate(vehicle.clients):
+            G.add_node(i)
+            if i:
+                G.add_edge(i,i-1)
+        networkx.draw(G, with_labels=True, font_weight='bold')
+        streamlit.pyplot(fig)

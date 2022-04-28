@@ -10,9 +10,10 @@ from ICOagents import Client, Deposit, Vehicle
 
 class Model(mesa.Model):
     '''Model is the name for the global model controller'''
-    def __init__(self, verbose = False):
+    def __init__(self, verbose = False, bar = False):
         super().__init__()
         self.verbose = verbose
+        self.bar = bar
         self.agents = {"deposits": {},"vehicles": {}, "vehicles_dupl": {}, "clients": {}, "routes": {}}
 
     def read_deposits(self, path):
@@ -105,21 +106,26 @@ class Model(mesa.Model):
 
     def find_best_sol(self,nb_ite,liste_vehicules,nb_algs):
         self.assign_heuristics_to_vehicles(liste_vehicules)
+        if(self.bar):
+            self.bar.config(nb_ite)
         for i in range(nb_ite):
+            if(self.bar):
+                pass
+                # self.bar.step(i)
             self.step()
         total_by_alg = [0]*nb_algs
         for v in liste_vehicules:
-            v.plot_graph_v(nb_algs,total_by_alg)
-            if len(v.algorithm) == nb_algs:
+            # v.plot_graph_v(nb_algs,total_by_alg)
+            if len(v.algorithm) > 0:
                 min_result = v.algorithm[0].mins[-1]
                 min_result_index = 0
-                for i in range(nb_algs):
+                for i in range(len(v.algorithm)):
                     if v.algorithm[i].mins[-1] < min_result :
                         min_result = v.algorithm[i].mins[-1]
                         min_result_index = i
                 v.clients = v.algorithm[min_result_index].prev_solus[-1]
             v.algorithm = []
-        return(total_by_alg)
+        return(liste_vehicules,total_by_alg)
 
     def solution_cost(self,liste_vehicules):
         total_sol = 0

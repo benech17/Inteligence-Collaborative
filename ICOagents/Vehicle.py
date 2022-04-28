@@ -83,7 +83,7 @@ class Agent(mesa.Agent):
             print("Non réalisé")
         
     def inter_route_swap(self,vhl):
-        if len(self.clients) != 0 and len(self.clients) != 1:
+        if len(self.clients) != 0 and len(self.clients) != 1 and len(vhl.clients) != 0 and len(vhl.clients) != 1 :
             a = rd.randint(0,len(self.clients)-1)
             b = rd.randint(0,len(vhl.clients)-1)
             c = self.clients[a]
