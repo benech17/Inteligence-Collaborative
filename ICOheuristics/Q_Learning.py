@@ -132,6 +132,7 @@ class Q_agent(mesa.Agent):
         improved = True
         no_improvement = 0
         state = 0
+        max = 0
         for i in range(len(self.best_sol)):
             self.sol[i].clients = self.best_sol[i].clients.copy()
         while improved == True: #Tant que l'algo arrive à trouver de meilleures solutions, on refait des épisodes
