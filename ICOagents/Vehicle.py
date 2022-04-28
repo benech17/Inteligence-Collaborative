@@ -7,8 +7,9 @@ import mesa
     
 class Agent(mesa.Agent):
     '''Vehicle Agent'''
-    def __init__(self, model, series, w):
+    def __init__(self, model, series, w, md, dept):
         super().__init__(model.next_id(), model)
+        self.depot = dept
         self.code = series['VEHICLE_CODE']
         self.vehicle_total_weight = series['VEHICLE_TOTAL_WEIGHT_KG']
         self.vehicle_total_volume = series['VEHICLE_TOTAL_VOLUME_M3']
@@ -21,6 +22,7 @@ class Agent(mesa.Agent):
         self.clients = []
         self.algorithm = []
         self.verifier = 0
+        self.mode = md
     
     def add_client_order(self, client):
         if client == 0:
@@ -34,16 +36,22 @@ class Agent(mesa.Agent):
     def f_cout(self, liste):
         d=0
         n=len(liste)
-        for i in range(n-1):
-            d += liste[i].distance(liste[i+1])
-        d+=1 #liste[0].depot_to_customer
-        d+=0 #liste[n-1].customer_to_depot
-        return self.omega + d*self.vehicle_variable_cost_km
+        if n == 0 :
+            return 0
+        elif n == 1 :
+            d+=2*liste[0].distance(self.depot)
+            return d
+        else:
+            for i in range(n-1):
+                d += liste[i].distance(liste[i+1])
+            d+=liste[0].distance(self.depot)
+            d+=liste[n-1].distance(self.depot)
+            return self.omega + d*self.vehicle_variable_cost_km
     
     def generateur(self, popu_size):
         newpop = [self.clients.copy()]
         newcout = [self.f_cout(self.clients)]
-        for i in range(popu_size-1) :
+        for i in range(1,popu_size) :
             newpop.append(self.clients.copy())
             rd.shuffle(newpop[i])
             newcout.append(self.f_cout(newpop[i]))
@@ -156,24 +164,32 @@ class Agent(mesa.Agent):
     def plot_graph_v(self,nb_algs,total_by_alg):
         if len(self.algorithm) != 0:
             for i in range(nb_algs):
-                plt.plot(self.algorithm[i].mins)
-                plt.title("Courbe de résultats de l'algorithme " + type(self.algorithm[i]).__name__)
-                plt.xlabel("Nombre d'itérations")
-                plt.ylabel('Coût trouvé')
-                plt.show()
+                # plt.plot(self.algorithm[i].mins)
+                # plt.title("Courbe de résultats de l'algorithme " + type(self.algorithm[i]).__name__)
+                # plt.xlabel("Nombre d'itérations")
+                # plt.ylabel('Coût trouvé')
+                # plt.show()
                 total_by_alg[i] += self.algorithm[i].mins[-1]
         else:
             liste = [len(self.clients)]*10
-            plt.plot(liste)
-            plt.title("Courbe de résultats pour client vide")
-            plt.xlabel("Nombre d'itérations (arbitraire)")
-            plt.ylabel('Coût trouvé')
-            plt.show()
+            # plt.plot(liste)
+            # plt.title("Courbe de résultats pour client vide")
+            # plt.xlabel("Nombre d'itérations (arbitraire)")
+            # plt.ylabel('Coût trouvé')
+            # plt.show()
             for i in range(nb_algs):
                 total_by_alg[i] += len(self.clients)
 
     def step(self):
-        for i in self.algorithm :
-            i.step()
+        if self.mode == "collab":
+            min_result = self.clients.copy()
+            for i in self.algorithm :
+                res = i.step()
+                if self.f_cout(res) < self.f_cout(min_result):
+                    min_result = res.copy()
+            self.clients = min_result
+        else:
+            for i in self.algorithm :
+                i.step()
 
 

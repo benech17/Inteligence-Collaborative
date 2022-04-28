@@ -19,6 +19,7 @@ class Q_agent(mesa.Agent):
         self.learn_rate = le_rate
         self.disc_rate = di_rate
     
+    #une des actions du Q-Learning, pouvant retirer la plus petite route non vide ou une route non vide au hasard
     def remove_road(self,typea,liste_vehicules):
         nb_clients = []
         i_selec = 0
@@ -68,6 +69,7 @@ class Q_agent(mesa.Agent):
             next_state = randint(0, 7)
         return(next_state)
     
+    #fonction pour assurer l'intégrité des solutions
     def verifSolu(self, resultat, liste) :
         Absents = []
         Doublons = []
@@ -88,6 +90,7 @@ class Q_agent(mesa.Agent):
                 resultatf.append(Absents[l])
         return(resultatf)
     
+    #fonction chargée de faire appliquer les actions sur des véhicules au hasard
     def apply_action(self,action):
         if action == 0:
             i = random.randint(0,len(self.sol)-1)
@@ -126,57 +129,70 @@ class Q_agent(mesa.Agent):
         elif action == 7:
             self.remove_road("random",self.sol)
 
-    def Q_learning(self,nb_ite,nb_algs):
-        cost_values = [self.model.solution_cost(self.best_sol)]
-        cost_values_by_alg = []
+    def Q_learning(self,nb_ite,pcross,pmut,taille_pop,iter_cycle,refroidissement,typea_list,mode):
+        #conditions initiales
+        cost_values = [self.model.solution_cost(self.best_sol)[0]]
+        cost_values_by_alg = [[self.model.solution_cost(self.best_sol)[0]]*len(typea_list)]
         improved = True
         no_improvement = 0
         state = 0
+        
+        #on remplit la solution modifiable en copiant la solution initiale/de référence
         for i in range(len(self.best_sol)):
             self.sol[i].clients = self.best_sol[i].clients.copy()
+        
         while improved == True: #Tant que l'algo arrive à trouver de meilleures solutions, on refait des épisodes
+            #sert à montrer l'évolution du coût pour voir que tout marche bien
             plt.plot(cost_values)
-            plt.title("Courbe de résultats de l'algorithme ")
+            plt.title("Q-Learning meilleur résultat, mode " + mode)
             plt.xlabel("Nombre d'itérations")
             plt.ylabel('Coût trouvé')
-            plt.show()    
+            plt.show()
+            
+            #paramètres remis à  pour l'épisode
             reward = 0
             states_visited = 0
             state_list = []
+            
+            #on fait le premier cycle et on regarde si notre nouvelle solution est mieux que la solution de référence
             next_state = self.choose_action(0,2)
             state_list.append(next_state)
             self.apply_action(next_state) #on met à jour self.sol avec la nouvelle action
-            sol_codes = []
-            self.sol,total_by_alg = self.model.find_best_sol(nb_ite,self.sol,nb_algs)
-            #cost_values.append(self.model.solution_cost(self.sol))
-            if self.model.solution_cost(self.sol) < self.model.solution_cost(self.best_sol):
-                reward = self.model.solution_cost(self.best_sol) - self.model.solution_cost(self.sol)
+            self.sol,total_by_alg = self.model.find_best_sol(nb_ite,self.sol,pcross,pmut,taille_pop,iter_cycle,refroidissement,typea_list)
+            if self.model.solution_cost(self.sol)[0] < self.model.solution_cost(self.best_sol)[0]:
+                reward = self.model.solution_cost(self.best_sol)[0] - self.model.solution_cost(self.sol)[0]
                 for i in range(len(self.best_sol)):
-                    self.best_sol[i].clients = self.sol[i].clients.copy()
-                cost_values.append(self.model.solution_cost(self.best_sol))
+                    self.best_sol[i].clients = self.sol[i].clients.copy() #si c'est le cas on met à jour la solution de référence en copiant la solution actuelle
+                cost_values.append(self.model.solution_cost(self.best_sol)[0])
                 cost_values_by_alg.append(total_by_alg)
+            
+            #sinon on continue à chercher tant que la solution n'est pas améliorée ou qu'on a dépassé le temps imparti
             else:
                 states_visited += 1
                 state_list.append(next_state)
-                while self.model.solution_cost(self.sol) >= self.model.solution_cost(self.best_sol):
+                while self.model.solution_cost(self.sol)[0] >= self.model.solution_cost(self.best_sol)[0]:
+                    #on choisit et on applique une nouvelle action (qui est aussi l'état suivant)
                     if no_improvement == 0:
                         state = next_state
                         next_state = self.choose_action(state,1)
                     else:
                         next_state = self.choose_action(0,2)
                     self.apply_action(next_state)
-                    self.sol,total_by_alg = self.model.find_best_sol(nb_ite,self.sol,nb_algs)
-                    #cost_values.append(self.model.solution_cost(self.sol))
-                    if self.model.solution_cost(self.sol) < self.model.solution_cost(self.best_sol):
-                        reward += self.model.solution_cost(self.best_sol) - self.model.solution_cost(self.sol)
+                    self.sol,total_by_alg = self.model.find_best_sol(nb_ite,self.sol,pcross,pmut,taille_pop,iter_cycle,refroidissement,typea_list)
+                    
+                    #si c'est mieux, on garde et on met à jour la matrice Q
+                    if self.model.solution_cost(self.sol)[0] < self.model.solution_cost(self.best_sol)[0]:
+                        reward += self.model.solution_cost(self.best_sol)[0] - self.model.solution_cost(self.sol)[0]
                         for i in range(len(self.best_sol)):
                             self.best_sol[i].clients = self.sol[i].clients.copy()
-                        cost_values.append(self.model.solution_cost(self.best_sol))
+                        cost_values.append(self.model.solution_cost(self.best_sol)[0])
                         cost_values_by_alg.append(total_by_alg)
                         improved = True
                         no_improvement = 0
                         self.Q[state,next_state] = (1 - self.learn_rate)*self.Q[state,next_state] + self.learn_rate*(reward + self.disc_rate*np.argmax(self.Q,axis = 1)[next_state])
                         break
+                    
+                    #sinon on continue à chercher
                     else:
                         if next_state in state_list:
                             states_visited += 1

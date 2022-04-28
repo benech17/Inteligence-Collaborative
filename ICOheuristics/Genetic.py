@@ -18,7 +18,6 @@ class GeneticAgent(mesa.Agent):
         self.s = 0
         self.mins = [self.vehicule.f_cout(self.vehicule.clients)]
         self.prev_solus = [self.vehicule.clients.copy()]
-        #self.dc = DataCollector({"solution": lambda m: self.f_main() })
 
     def permutation_list(self, liste):
         result = liste.copy()
@@ -32,6 +31,7 @@ class GeneticAgent(mesa.Agent):
         result[j]=x
         return(result)
     
+    #fonction permettant de s'assurer qu'on a des solutions intègres
     def verifSolu(self, resultat, liste) :
         Absents = []
         Doublons = []
@@ -95,6 +95,10 @@ class GeneticAgent(mesa.Agent):
         return(S)
 
     def step(self):
+        #on exploite les informations des autres algos si elles sont meilleures que la solution trouvée
+        if self.prev_solus[-1] != self.vehicule.clients and self.vehicule.mode == "collab":
+            self.popu,self.cout = self.vehicule.generateur(self.popu_size)
+        
         forceTriee, prePopTriee = self.triInsertion(self.cout,self.popu)
         liste_clients_f = prePopTriee[0]
         cout_f = forceTriee[0]
@@ -119,15 +123,18 @@ class GeneticAgent(mesa.Agent):
         for i in S2 :
             if rd.random() < self.Pmut :
                 a = self.permutation_list(i)
-                
                 self.popu.append(a)
                 self.cout.append(self.vehicule.f_cout(a))
             else :
                 self.popu.append(i)
                 self.cout.append(self.vehicule.f_cout(i))
         
+        #si la meilleure solution n'apparaît pas dans la nouvelle population, on force son insertion
         if self.cout[0] > self.vehicule.f_cout(liste_clients_f):
             self.popu[0] = liste_clients_f
+            self.cout[0] = self.vehicule.f_cout(liste_clients_f)
+        
+        #on enregistre les résultats obtenus
         self.mins.append(cout_f)
         self.prev_solus.append(liste_clients_f)
         return(liste_clients_f)
