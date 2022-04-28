@@ -48,43 +48,43 @@ if __name__ == "__main__":
     typea_list = ["genetic","taboo","rs"]
     
     #décommenter pour le premier tableau (mode indépendance des algos heuristiques)
-    alg_list = ["heuristique","sma","qlearn"]
-    mode = "independance"
-    res_heurist1 = []
-    res_sma1 = []
-    res_qlearn1 = []
-    total1 = [res_heurist1,res_sma1,res_qlearn1]
-    for i in range(route_num):
-        for j in range(len(alg_list)):
-            l = model.agents['routes'][i].copy()
-            model.agents['vehicles'].clear()
-            model.agents['vehicles_dupl'].clear()
-            model.read_vehicles('Data/3_detail_table_vehicles.csv', mode, list(model.agents['deposits'].values())[0], w)
-            sol_init = list(model.agents['vehicles_dupl'].values())
-            sol_base = model.assign_clients_to_vehicles(l,list(model.agents['vehicles'].values()))
-            res = model.exec_alg_spec(alg_list[j],"independance",sol_base,sol_init,nb_ite,pcross,pmut,taille_pop,iter_cycle,refroidissement,typea_list,max_iter_no_improvement,max_nb_states,epsilon,decay_rate,learn_rate,disc_rate)
-            total1[j].append(res)
+    # alg_list = ["heuristique","sma","qlearn"]
+    # mode = "independance"
+    # res_heurist1 = []
+    # res_sma1 = []
+    # res_qlearn1 = []
+    # total1 = [res_heurist1,res_sma1,res_qlearn1]
+    # for i in range(route_num):
+    #     for j in range(len(alg_list)):
+    #         l = model.agents['routes'][i].copy()
+    #         model.agents['vehicles'].clear()
+    #         model.agents['vehicles_dupl'].clear()
+    #         model.read_vehicles('Data/3_detail_table_vehicles.csv', mode, list(model.agents['deposits'].values())[0], w)
+    #         sol_init = list(model.agents['vehicles_dupl'].values())
+    #         sol_base = model.assign_clients_to_vehicles(l,list(model.agents['vehicles'].values()))
+    #         res = model.exec_alg_spec(alg_list[j],"independance",sol_base,sol_init,nb_ite,pcross,pmut,taille_pop,iter_cycle,refroidissement,typea_list,max_iter_no_improvement,max_nb_states,epsilon,decay_rate,learn_rate,disc_rate)
+    #         total1[j].append(res)
     
-    for k in range(len(total1)):
-        simultaneous = []
-        for i in range(len(typea_list)):
-            liste = []
-            for j in total1[k]:
-                liste.append(j[i])
-            simultaneous.append(liste)
+    # for k in range(len(total1)):
+    #     simultaneous = []
+    #     for i in range(len(typea_list)):
+    #         liste = []
+    #         for j in total1[k]:
+    #             liste.append(j[i])
+    #         simultaneous.append(liste)
         
-        for i in range(len(typea_list)):
-            plt.plot(simultaneous[i])
-        if k == 0:
-            alg = "heuristique "
-        elif k == 1:
-            alg = "SMA "
-        elif k == 2:
-            alg = "Q-Learning "
-        plt.title("Affichage des solutions par algo " + alg + mode)
-        plt.xlabel("Route")
-        plt.ylabel('Coût trouvé')
-        plt.show()
+    #     for i in range(len(typea_list)):
+    #         plt.plot(simultaneous[i])
+    #     if k == 0:
+    #         alg = "heuristique "
+    #     elif k == 1:
+    #         alg = "SMA "
+    #     elif k == 2:
+    #         alg = "Q-Learning "
+    #     plt.title("Affichage des solutions par algo " + alg + mode)
+    #     plt.xlabel("Route")
+    #     plt.ylabel('Coût trouvé')
+    #     plt.show()
     
     #décommenter pour le second tableau (mode interaction des algos heuristiques) attention c long
     alg_list = ["sma","qlearn"]
@@ -141,7 +141,7 @@ if __name__ == "__main__":
             simultaneous = []
             for i in range(4):
                 liste = []
-                for j in k[h]:
+                for j in total2[k][h]:
                     liste.append(j[i])
                 simultaneous.append(liste)
         
