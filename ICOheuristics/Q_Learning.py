@@ -142,11 +142,12 @@ class Q_agent(mesa.Agent):
             self.apply_action(next_state) #on met à jour self.sol avec la nouvelle action
             sol_codes = []
             self.sol,total_by_alg = self.model.find_best_sol(nb_ite,self.sol,nb_algs)
-            cost_values.append(self.model.solution_cost(self.sol))
+            #cost_values.append(self.model.solution_cost(self.sol))
             if self.model.solution_cost(self.sol) < self.model.solution_cost(self.best_sol):
                 reward = self.model.solution_cost(self.best_sol) - self.model.solution_cost(self.sol)
-                self.best_sol = self.sol
-                #cost_values.append(self.model.solution_cost(self.best_sol))
+                for i in range(len(self.best_sol)):
+                    self.best_sol[i].clients = self.sol[i].clients.copy()
+                cost_values.append(self.model.solution_cost(self.best_sol))
                 cost_values_by_alg.append(total_by_alg)
             else:
                 states_visited += 1
@@ -159,12 +160,12 @@ class Q_agent(mesa.Agent):
                         next_state = self.choose_action(0,2)
                     self.apply_action(next_state)
                     self.sol,total_by_alg = self.model.find_best_sol(nb_ite,self.sol,nb_algs)
-                    cost_values.append(self.model.solution_cost(self.sol))
+                    #cost_values.append(self.model.solution_cost(self.sol))
                     if self.model.solution_cost(self.sol) < self.model.solution_cost(self.best_sol):
-                        print("yay")
                         reward += self.model.solution_cost(self.best_sol) - self.model.solution_cost(self.sol)
-                        self.best_sol = self.sol
-                        #cost_values.append(self.model.solution_cost(self.best_sol))
+                        for i in range(len(self.best_sol)):
+                            self.best_sol[i].clients = self.sol[i].clients.copy()
+                        cost_values.append(self.model.solution_cost(self.best_sol))
                         cost_values_by_alg.append(total_by_alg)
                         improved = True
                         no_improvement = 0

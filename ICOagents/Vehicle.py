@@ -161,6 +161,7 @@ class Agent(mesa.Agent):
                 plt.xlabel("Nombre d'itérations")
                 plt.ylabel('Coût trouvé')
                 plt.show()
+                total_by_alg[i] += self.algorithm[i].mins[-1]
         else:
             liste = [len(self.clients)]*10
             plt.plot(liste)

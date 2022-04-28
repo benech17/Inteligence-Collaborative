@@ -26,12 +26,12 @@ if __name__ == "__main__":
     # Streamlit.text("Let's start by plotting the map with the clustering")
     # Streamlit.map(model)
     
-    nb_ite = 10
+    nb_ite = 20
     route_num = 0
     nb_algs = 3
-    max_iter_no_improvement = 30
-    max_nb_states = 10
-    epsilon = 0.8
+    max_iter_no_improvement = 5
+    max_nb_states = 5
+    epsilon = 0.5
     decay_rate = 0.9
     learn_rate = 0.1
     disc_rate = 0.9
