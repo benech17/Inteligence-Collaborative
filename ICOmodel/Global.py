@@ -106,11 +106,12 @@ class Model(mesa.Model):
             self.step()
         total_by_alg = [0]*nb_algs
         for v in liste_vehicules:
-            v.plot_graph_v(nb_algs,total_by_alg)
+            #v.plot_graph_v(nb_algs,total_by_alg)
             if len(v.algorithm) > 0:
                 min_result = v.algorithm[0].mins[-1]
                 min_result_index = 0
                 for i in range(len(v.algorithm)):
+                    total_by_alg[i] += v.algorithm[i].mins[-1]
                     if v.algorithm[i].mins[-1] < min_result :
                         min_result = v.algorithm[i].mins[-1]
                         min_result_index = i

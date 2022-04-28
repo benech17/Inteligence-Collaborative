@@ -29,8 +29,8 @@ if __name__ == "__main__":
     nb_ite = 20
     route_num = 0
     nb_algs = 3
-    max_iter_no_improvement = 5
-    max_nb_states = 5
+    max_iter_no_improvement = 10
+    max_nb_states = 8
     epsilon = 0.5
     decay_rate = 0.9
     learn_rate = 0.1
@@ -54,12 +54,6 @@ if __name__ == "__main__":
         simultaneous.append(liste)
     
     print(Q)
-    
-    plt.plot(liste_couts)
-    plt.title("Courbe de résultats de l'algorithme ")
-    plt.xlabel("Nombre d'itérations")
-    plt.ylabel('Coût trouvé')
-    plt.show()
     
     for i in range(nb_algs):
         plt.plot(simultaneous[i])

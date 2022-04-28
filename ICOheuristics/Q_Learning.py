@@ -3,6 +3,7 @@ import numpy as np
 from random import randint
 import random
 from ICOagents import Vehicle
+import matplotlib.pyplot as plt
 
 class Q_agent(mesa.Agent):
     def __init__(self, model, vhl_list_base, vhl_list_init, ni, st, eps, de_rate, le_rate, di_rate):
@@ -134,6 +135,11 @@ class Q_agent(mesa.Agent):
         for i in range(len(self.best_sol)):
             self.sol[i].clients = self.best_sol[i].clients.copy()
         while improved == True: #Tant que l'algo arrive à trouver de meilleures solutions, on refait des épisodes
+            plt.plot(cost_values)
+            plt.title("Courbe de résultats de l'algorithme ")
+            plt.xlabel("Nombre d'itérations")
+            plt.ylabel('Coût trouvé')
+            plt.show()    
             reward = 0
             states_visited = 0
             state_list = []
@@ -170,6 +176,7 @@ class Q_agent(mesa.Agent):
                         improved = True
                         no_improvement = 0
                         self.Q[state,next_state] = (1 - self.learn_rate)*self.Q[state,next_state] + self.learn_rate*(reward + self.disc_rate*np.argmax(self.Q,axis = 1)[next_state])
+                        break
                     else:
                         if next_state in state_list:
                             states_visited += 1
