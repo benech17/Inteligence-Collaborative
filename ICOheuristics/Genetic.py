@@ -25,8 +25,8 @@ class GeneticAgent(mesa.Agent):
         n=len(result)
         i=rd.randint(0,n-1)
         j=rd.randint(0,n-1)
-        # while(i==j):
-        #     j=rd.randint(0,n-1)
+        while(i==j):
+            j=rd.randint(0,n-1)
         x=result[i]
         result[i]=result[j]
         result[j]=x
