@@ -41,9 +41,9 @@ class Agent(mesa.Agent):
         return self.omega + d*self.vehicle_variable_cost_km
     
     def generateur(self, popu_size):
-        newpop = []
-        newcout = []
-        for i in range(popu_size) :
+        newpop = [self.clients.copy()]
+        newcout = [self.f_cout(self.clients)]
+        for i in range(popu_size-1) :
             newpop.append(self.clients.copy())
             rd.shuffle(newpop[i])
             newcout.append(self.f_cout(newpop[i]))

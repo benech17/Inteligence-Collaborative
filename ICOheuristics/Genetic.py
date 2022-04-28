@@ -16,8 +16,8 @@ class GeneticAgent(mesa.Agent):
         self.popu = popu_init
         self.cout = cout_init
         self.s = 0
-        self.mins = [min(self.cout)]
-        self.prev_solus = []
+        self.mins = [self.vehicule.f_cout(self.vehicule.clients)]
+        self.prev_solus = [self.vehicule.clients.copy()]
         #self.dc = DataCollector({"solution": lambda m: self.f_main() })
 
     def permutation_list(self, liste):
@@ -128,7 +128,6 @@ class GeneticAgent(mesa.Agent):
         
         if self.cout[0] > self.vehicule.f_cout(liste_clients_f):
             self.popu[0] = liste_clients_f
-            self.cout[0] = self.vehicule.f_cout(liste_clients_f)
         self.mins.append(cout_f)
         self.prev_solus.append(liste_clients_f)
         return(liste_clients_f)

@@ -21,12 +21,7 @@ class TabouAgent(mesa.Agent):
         i=rd.randint(0,n-1)
         j=rd.randint(0,n-1)
         while(i==j):
-            if(n>1):
-                print(n)
-                j=rd.randint(0,n-1)
-            else:
-                print("break!")
-                break
+            j=rd.randint(0,n-1)
         x=result[i]
         result[i]=result[j]
         result[j]=x
