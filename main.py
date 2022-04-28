@@ -26,12 +26,12 @@ if __name__ == "__main__":
     # Streamlit.text("Let's start by plotting the map with the clustering")
     # Streamlit.map(model)
     
-    nb_ite = 50
+    nb_ite = 10
     route_num = 0
     nb_algs = 3
-    max_iter_no_improvement = 10
+    max_iter_no_improvement = 30
     max_nb_states = 10
-    epsilon = 0.5
+    epsilon = 0.8
     decay_rate = 0.9
     learn_rate = 0.1
     disc_rate = 0.9
@@ -43,25 +43,8 @@ if __name__ == "__main__":
     sol_init = list(model.agents['vehicles_dupl'].values())
     sol_base = model.assign_clients_to_vehicles(l,list(model.agents['vehicles'].values()))
     
-    sol_codes = []
-    for v in sol_base:
-        b = []
-        for k in v.clients:
-            b.append(k.code) 
-        sol_codes.append(b)
-    print(sol_codes)
-    
     learner = Q_Learning.Q_agent(model,sol_base,sol_init,max_iter_no_improvement,max_nb_states,epsilon,decay_rate,learn_rate,disc_rate)
-    solu_f,liste_couts,liste_couts_par_algo = learner.Q_learning(nb_ite,nb_algs)
-    
-    sol_codes = []
-    for v in solu_f:
-        b = []
-        for k in v.algorithm:
-            for h in k.prev_solus[-1]:
-                b.append(h.code) 
-        sol_codes.append(b)
-    print(sol_codes)
+    solu_f,liste_couts,liste_couts_par_algo,Q = learner.Q_learning(nb_ite,nb_algs)
     
     simultaneous = []
     for i in range(nb_algs):
@@ -69,6 +52,8 @@ if __name__ == "__main__":
         for j in liste_couts_par_algo:
             liste.append(j[i])
         simultaneous.append(liste)
+    
+    print(Q)
     
     plt.plot(liste_couts)
     plt.title("Courbe de résultats de l'algorithme ")

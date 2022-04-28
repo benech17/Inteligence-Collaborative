@@ -107,16 +107,16 @@ class Model(mesa.Model):
         total_by_alg = [0]*nb_algs
         for v in liste_vehicules:
             v.plot_graph_v(nb_algs,total_by_alg)
-            if len(v.algorithm) == nb_algs:
+            if len(v.algorithm) > 0:
                 min_result = v.algorithm[0].mins[-1]
                 min_result_index = 0
-                for i in range(nb_algs):
+                for i in range(len(v.algorithm)):
                     if v.algorithm[i].mins[-1] < min_result :
                         min_result = v.algorithm[i].mins[-1]
                         min_result_index = i
                 v.clients = v.algorithm[min_result_index].prev_solus[-1]
             v.algorithm = []
-        return(total_by_alg)
+        return(liste_vehicules,total_by_alg)
 
     def solution_cost(self,liste_vehicules):
         total_sol = 0

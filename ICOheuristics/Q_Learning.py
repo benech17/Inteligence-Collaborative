@@ -66,11 +66,33 @@ class Q_agent(mesa.Agent):
         if typea == 2:
             next_state = randint(0, 7)
         return(next_state)
-        
+    
+    def verifSolu(self, resultat, liste) :
+        Absents = []
+        Doublons = []
+        resultatf = resultat.copy()
+        for i in liste :
+            instances = 0
+            for j in range(len(resultat)):
+                if resultat[j].code == i.code and instances == 0 :
+                    instances += 1
+                elif resultat[j].code == i.code and instances == 1 :
+                    Doublons.append([i,j])
+            if instances == 0 :
+                Absents.append(i)
+        for k in range(len(Doublons)) :
+            resultatf[Doublons[k][1]] = Absents[k]
+        if len(Absents) > len(Doublons) :
+            for l in range(len(Doublons), len(Absents)) :
+                resultatf.append(Absents[l])
+        return(resultatf)
+    
     def apply_action(self,action):
         if action == 0:
             i = random.randint(0,len(self.sol)-1)
+            verif = self.sol[i].clients.copy()
             self.sol[i].intra_route_swap()
+            self.sol[i].clients = self.verifSolu(self.sol[i].clients, verif)
         elif action == 1:
             i = random.randint(0,len(self.sol)-1)
             j = random.randint(0,len(self.sol)-1)
@@ -79,7 +101,9 @@ class Q_agent(mesa.Agent):
             self.sol[i].inter_route_swap(self.sol[j])
         elif action == 2:
             i = random.randint(0,len(self.sol)-1)
+            verif = self.sol[i].clients.copy()
             self.sol[i].intra_route_shift()
+            self.sol[i].clients = self.verifSolu(self.sol[i].clients, verif)
         elif action == 3:
             i = random.randint(0,len(self.sol)-1)
             j = random.randint(0,len(self.sol)-1)
@@ -88,10 +112,14 @@ class Q_agent(mesa.Agent):
             self.sol[i].inter_route_shift(self.sol[j])
         elif action == 4:
             i = random.randint(0,len(self.sol)-1)
+            verif = self.sol[i].clients.copy()
             self.sol[i].two_intra_route_swap()
+            self.sol[i].clients = self.verifSolu(self.sol[i].clients, verif)
         elif action == 5:
             i = random.randint(0,len(self.sol)-1)
+            verif = self.sol[i].clients.copy()
             self.sol[i].two_intra_route_shift()
+            self.sol[i].clients = self.verifSolu(self.sol[i].clients, verif)
         elif action == 6:
             self.remove_road("smallest", self.sol)
         elif action == 7:
@@ -113,15 +141,16 @@ class Q_agent(mesa.Agent):
             state_list.append(next_state)
             self.apply_action(next_state) #on met à jour self.sol avec la nouvelle action
             sol_codes = []
-            total_by_alg = self.model.find_best_sol(nb_ite,self.sol,nb_algs)
-            print("sorti")
+            self.sol,total_by_alg = self.model.find_best_sol(nb_ite,self.sol,nb_algs)
+            cost_values.append(self.model.solution_cost(self.sol))
             if self.model.solution_cost(self.sol) < self.model.solution_cost(self.best_sol):
                 reward = self.model.solution_cost(self.best_sol) - self.model.solution_cost(self.sol)
                 self.best_sol = self.sol
-                cost_values.append(self.model.solution_cost(self.best_sol))
+                #cost_values.append(self.model.solution_cost(self.best_sol))
                 cost_values_by_alg.append(total_by_alg)
             else:
                 states_visited += 1
+                state_list.append(next_state)
                 while self.model.solution_cost(self.sol) >= self.model.solution_cost(self.best_sol):
                     if no_improvement == 0:
                         state = next_state
@@ -129,11 +158,13 @@ class Q_agent(mesa.Agent):
                     else:
                         next_state = self.choose_action(0,2)
                     self.apply_action(next_state)
-                    total_by_alg = self.model.find_best_sol(nb_ite,self.sol,nb_algs)
+                    self.sol,total_by_alg = self.model.find_best_sol(nb_ite,self.sol,nb_algs)
+                    cost_values.append(self.model.solution_cost(self.sol))
                     if self.model.solution_cost(self.sol) < self.model.solution_cost(self.best_sol):
+                        print("yay")
                         reward += self.model.solution_cost(self.best_sol) - self.model.solution_cost(self.sol)
                         self.best_sol = self.sol
-                        cost_values.append(self.model.solution_cost(self.best_sol))
+                        #cost_values.append(self.model.solution_cost(self.best_sol))
                         cost_values_by_alg.append(total_by_alg)
                         improved = True
                         no_improvement = 0
@@ -148,7 +179,7 @@ class Q_agent(mesa.Agent):
                             improved = False
                             break
                 self.epsilon *= self.decay_rate
-        return(self.best_sol,cost_values,cost_values_by_alg)
+        return(self.best_sol,cost_values,cost_values_by_alg,self.Q)
         
         
         
